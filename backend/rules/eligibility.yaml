@@ -1,0 +1,28 @@
+# Donor pre-screen. This is NOT a medical clearance: the blood centre does the real
+# screening (haemoglobin, BP, history). Values follow commonly cited NBTC donor-selection
+# guidance; confirm each against the current official guideline PDF before going live.
+source: "NBTC Guidelines for Blood Donor Selection and Blood Donor Referral (verify current edition)"
+
+static:
+  min_age: 18
+  max_age: 65
+  min_weight_kg: 45
+  rest_days:            # minimum gap between whole-blood donations
+    M: 90
+    F: 120
+    O: 120              # conservative default when gender is "other"
+
+# Asked in order after a donor taps "I can donate". Answering "yes" to any = defer today.
+questions:
+  - id: alcohol_24h
+    en: "Have you had alcohol in the last 24 hours?"
+    hi: "क्या आपने पिछले 24 घंटे में शराब पी है?"
+  - id: tattoo_12m
+    en: "Any tattoo or piercing in the last 12 months?"
+    hi: "क्या पिछले 12 महीने में टैटू या पियर्सिंग करवाई है?"
+  - id: unwell_now
+    en: "Do you have fever or a cold, or are you taking antibiotics right now?"
+    hi: "क्या अभी बुखार या ज़ुकाम है, या आप एंटीबायोटिक ले रहे हैं?"
+  - id: donated_recently
+    en: "Have you donated blood in the last 3 months (4 months for women)?"
+    hi: "क्या आपने पिछले 3 महीने में (महिलाएं 4 महीने) रक्तदान किया है?"
