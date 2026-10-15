@@ -1,0 +1,10 @@
+{
+  "name": "Rakt Doot",
+  "short_name": "Rakt Doot",
+  "description": "Emergency blood finder: live blood-bank stock first, nearby WhatsApp donors next.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fffcef",
+  "theme_color": "#80011f",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
