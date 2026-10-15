@@ -14,6 +14,18 @@ def _id() -> str:
     return uuid.uuid4().hex
 
 
+class Profile(Base):
+    __tablename__ = "profiles"
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)  # Supabase user id
+    name: Mapped[str] = mapped_column(String(80), default="")
+    phone: Mapped[str] = mapped_column(String(20), index=True)
+    language: Mapped[str] = mapped_column(String(2), default="en")
+    whatsapp_consent: Mapped[bool] = mapped_column(Boolean, default=False)
+    whatsapp_welcome_status: Mapped[str] = mapped_column(String(10), default="pending")
+    whatsapp_welcomed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
 class Donor(Base):
     __tablename__ = "donors"
     id: Mapped[str] = mapped_column(String(32), primary_key=True, default=_id)

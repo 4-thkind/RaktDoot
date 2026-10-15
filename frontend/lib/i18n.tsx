@@ -10,6 +10,9 @@ const DICT = {
   nav_find: { en: "Find blood", hi: "खून ढूंढें" },
   nav_donate: { en: "Become a donor", hi: "डोनर बनें" },
   nav_how: { en: "How it works", hi: "यह कैसे काम करता है" },
+  nav_login: { en: "Log in", hi: "लॉग इन" },
+  nav_signup: { en: "Sign up", hi: "साइन अप" },
+  nav_logout: { en: "Log out", hi: "लॉग आउट" },
   lang_switch: { en: "हिन्दी", hi: "English" },
 
   hero_title: { en: "Find blood for a patient, now.", hi: "मरीज़ के लिए अभी खून ढूंढें।" },

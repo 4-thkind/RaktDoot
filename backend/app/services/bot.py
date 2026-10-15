@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from ..core import eligibility
 from ..core.compatibility import GROUPS, normalize_group
 from ..db import utcnow
-from ..models import Donation, Donor, Notification, Request
+from ..models import Donation, Donor, Notification, Profile, Request
 from . import dispatch, geocode, whatsapp
 from .llm import parse_intent
 from .messages import b, t
@@ -39,6 +39,8 @@ def handle_inbound(db: Session, phone: str, text: str = "", button_id: str | Non
     if word in ("STOP", "UNSUBSCRIBE"):
         if donor:
             donor.opted_out = True
+        for profile in db.scalars(select(Profile).where(Profile.phone == phone)):
+            profile.whatsapp_consent = False
         conv.state, conv.data = "idle", {}
         whatsapp.send(db, phone, t("stopped", lang))
         return

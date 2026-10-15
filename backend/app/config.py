@@ -30,6 +30,10 @@ class Settings:
     admin_token: str = field(default_factory=lambda: _env("ADMIN_TOKEN", "change-me"))
     timezone: str = field(default_factory=lambda: _env("APP_TIMEZONE", "Asia/Kolkata"))
 
+    #Auth
+    supabase_url: str = field(default_factory=lambda: _env("SUPABASE_URL").rstrip("/"))
+    supabase_anon_key: str = field(default_factory=lambda: _env("SUPABASE_ANON_KEY"))
+    
     # TinyFish
     tinyfish_api_key: str = field(default_factory=lambda: _env("TINYFISH_API_KEY"))
     tinyfish_mode: str = field(default_factory=lambda: _env("TINYFISH_MODE", "auto"))  # auto | live | demo

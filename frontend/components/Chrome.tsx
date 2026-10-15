@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLang } from "@/lib/i18n";
+import { logout, useAuth } from "@/lib/auth";
 
 export function Header() {
   const { t, lang, setLang } = useLang();
   const path = usePathname() || "/";
+  const { user } = useAuth();
   const nav: [string, string][] = [
     ["/find", t("nav_find")],
     ["/donate", t("nav_donate")],
@@ -32,6 +34,19 @@ export function Header() {
               {label}
             </Link>
           ))}
+            <span style={{ marginLeft: "auto", display: "flex", gap: 22, alignItems: "center", whiteSpace: "nowrap" }}>
+              {user ? (
+               <>
+                <span aria-label="Signed in as">{user.name}</span>
+                <a href="/" onClick={async (e) => { e.preventDefault(); await logout(); window.location.href = "/"; }}>{t("nav_logout")}</a>
+              </>
+            ) : (
+              <>
+                <Link href="/login" aria-current={path.startsWith("/login") ? "page" : undefined}>{t("nav_login")}</Link>
+                <Link href="/signup" aria-current={path.startsWith("/signup") ? "page" : undefined}>{t("nav_signup")}</Link>
+              </>
+            )}
+          </span>
         </div>
       </nav>
     </header>

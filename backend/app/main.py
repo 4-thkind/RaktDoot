@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import func, select
 
-from .api import admin, requests, stock, whatsapp_routes
+from .api import admin, auth, requests, stock, whatsapp_routes
 from .config import settings
 from .db import init_db, session_scope
 from .jobs import ticker
@@ -31,5 +31,5 @@ async def lifespan(_app: FastAPI):
 
 app = FastAPI(title="Rakt Doot API", version="1.0.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=settings.cors_origins, allow_methods=["*"], allow_headers=["*"])
-for r in (stock.router, requests.router, whatsapp_routes.router, admin.router):
+for r in (auth.router, stock.router, requests.router, whatsapp_routes.router, admin.router):
     app.include_router(r)

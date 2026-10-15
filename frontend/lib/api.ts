@@ -8,9 +8,10 @@ export class ApiError extends Error {
   }
 }
 
-export async function api<T>(path: string, init?: RequestInit & { admin?: string }): Promise<T> {
+export async function api<T>(path: string, init?: RequestInit & { admin?: string; token?: string }): Promise<T> {
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (init?.admin) headers["X-Admin-Token"] = init.admin;
+  if (init?.token) headers["Authorization"] = `Bearer ${init.token}`;
   let res: Response;
   try {
     res = await fetch(`${API_BASE}${path}`, { ...init, headers: { ...headers, ...(init?.headers as Record<string, string>) } });

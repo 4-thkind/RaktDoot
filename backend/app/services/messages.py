@@ -33,6 +33,10 @@ TEXT: dict[str, dict[str, str]] = {
         "en": "You are registered, {name}. Blood group: {group}.\n\nWe will only message you when someone near you needs your group, at most once a day. Reply PAUSE 30 to take a break, or STOP to leave.",
         "hi": "{name}, आपका पंजीकरण हो गया। ब्लड ग्रुप: {group}.\n\nपास में आपके ग्रुप की ज़रूरत होने पर ही, दिन में अधिकतम एक बार, संदेश आएगा। ब्रेक के लिए PAUSE 30 और छोड़ने के लिए STOP भेजें।",
     },
+    "account_welcome": {
+        "en": "Welcome to Rakt Doot, {name}. Your account is ready.\n\nThis is the WhatsApp number we will use for updates about your blood requests. Want to help others too? Reply JOIN to register as a donor. Reply STOP to stop these messages.",
+        "hi": "रक्त दूत में स्वागत है, {name}। आपका अकाउंट तैयार है।\n\nआपके रक्त अनुरोधों के अपडेट हम इसी WhatsApp नंबर पर भेजेंगे। दूसरों की मदद भी करना चाहते हैं? डोनर बनने के लिए JOIN भेजें। ये संदेश बंद करने के लिए STOP भेजें।",
+    },
     # --- session messages (inside the 24 h window opened by the donor's reply) ---
     "pre_screen_intro": {
         "en": "Thank you. Four quick questions first, so you are not turned away at the blood centre.",
@@ -165,6 +169,7 @@ TEMPLATES = {
     "onway": ("donor_on_way_check", ["hospital"]),
     "eligible_again": ("eligible_again", ["name"]),
     "welcome": ("welcome_donor", ["name", "group"]),
+    "account_welcome": ("account_welcome", ["name"]),
     "fulfilled_notice": ("request_fulfilled", ["hospital"]),
     "closed_notice": ("request_closed", ["hospital"]),
 }
