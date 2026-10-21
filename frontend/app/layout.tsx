@@ -1,3 +1,4 @@
+import TelegramConnect from "@/components/TelegramConnect";
 import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/bodoni-moda/opsz.css";
 import "@fontsource/noto-sans/400.css";
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LangProvider>
           <a href="#main" className="sr-only">Skip to content</a>
           <Header />
+          <TelegramConnect />
           <main id="main">{children}</main>
           <Footer />
         </LangProvider>

@@ -22,11 +22,11 @@ async function sendWelcome(accessToken: string) {
   }
 }
 
-export async function signup(body: { name: string; email: string; phone: string; password: string; whatsapp_consent: boolean; language: string }) {
+export async function signup(body: { name: string; email: string; phone: string; password: string; whatsapp_consent: boolean; telegram_consent?: boolean; language: string }) {
   const { data, error } = await supabase.auth.signUp({
     email: body.email.trim(),
     password: body.password,
-    options: { data: { name: body.name.trim(), phone: body.phone, language: body.language, whatsapp_consent: body.whatsapp_consent } },
+    options: { data: { name: body.name.trim(), phone: body.phone, language: body.language, whatsapp_consent: body.whatsapp_consent, telegram_consent: body.telegram_consent === true } },
   });
   if (error) throw new Error(error.message);
   // No session means Supabase wants the email confirmed first; the welcome is then sent on first login.
