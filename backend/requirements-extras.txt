@@ -1,0 +1,6 @@
+# Optional extras. The app runs without them.
+# Intel oneAPI path (F14): USE_INTEL_SKLEARN=true runs camp-placement KMeans on Intel Extension for Scikit-learn
+scikit-learn>=1.4
+scikit-learn-intelex>=2024.0
+# Sample asset generator (scripts/make_samples.py)
+# pillow>=10
