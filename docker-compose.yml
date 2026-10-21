@@ -20,6 +20,7 @@ services:
         required: false
     environment:
       DATABASE_URL: postgresql://raktdoot:raktdoot@db:5432/raktdoot
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:3000}   # run.py sets the tunnel URL for phone links
     volumes: [models:/root/.cache/huggingface]   # local Whisper model, downloaded once
     ports: ["8000:8000"]
     depends_on:
@@ -29,7 +30,7 @@ services:
     build:
       context: ./frontend
       args:
-        NEXT_PUBLIC_API_BASE: ${NEXT_PUBLIC_API_BASE:-http://localhost:8000}
+        NEXT_PUBLIC_API_BASE: ${NEXT_PUBLIC_API_BASE:-}   # empty = same origin via the Next proxy
         NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL:-}
         NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY:-}
     ports: ["3000:3000"]
