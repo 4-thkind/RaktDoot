@@ -15,7 +15,8 @@ def sse(data: dict, event: str | None = None) -> str:
     return f"{head}data: {json.dumps(data, default=str, ensure_ascii=False)}\n\n"
 
 
-SSE_HEADERS = {"Cache-Control": "no-cache", "X-Accel-Buffering": "no", "Connection": "keep-alive"}
+# exact "text/event-stream" (no charset): Cloudflare tunnels only stream responses with that exact type
+SSE_HEADERS = {"Content-Type": "text/event-stream", "Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no", "Connection": "keep-alive"}
 
 
 def require_admin(x_admin_token: str = Header(default="")) -> None:
