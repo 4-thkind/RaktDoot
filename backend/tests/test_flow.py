@@ -100,13 +100,13 @@ def test_full_flow(fresh):
     assert all(d["phone"] for d in snap["donors"] if d["status"] == "connected")
     if len(phones) > 4:  # everyone still pending was told they are not needed
         pending_chat = c.get(f"/api/mock/chats/{phones[4]}").json()
-        assert "covered" in pending_chat["messages"][-1]["body"]
+        assert any(w in pending_chat["messages"][-1]["body"] for w in ("covered", "पूरा हो गया"))  # en or hi donor
 
     # a late tap on an old alert gets a polite "already covered"
     if len(phones) > 4:
         old = c.get(f"/api/mock/chats/{phones[4]}").json()
         late = say(c, phones[4], button=next(i for m in old["messages"] for o in (m.get("options") or []) for i in [o["id"]] if i.startswith("acc:")))
-        assert "already got help" in late["messages"][-1]["body"]
+        assert any(w in late["messages"][-1]["body"] for w in ("already got help", "मदद मिल चुकी"))
 
     # 24 h later the bot asks "did you donate?"; donor 3 says yes
     t = c.post("/api/admin/tick", params={"advance_hours": 3}, headers=ADMIN).json()

@@ -12,6 +12,12 @@ os.environ.update({
     "RESPECT_QUIET_HOURS": "false",
     "ADMIN_TOKEN": "test-admin",
     "TICKER_SECONDS": "3600",
+    "FORECAST_ENABLED": "false",  # radar tests switch it on explicitly
+    "STT_PROVIDER": "demo",  # local Whisper is exercised in Docker; tests use the fixed sample transcripts
+    "STT_API_KEY": "",
+    "TINYFISH_REPLAY_ENABLED": "true",
+    "TTS_PROVIDER": "off",  # voice-reply tests swap in a fake synthesizer
+    "CAMP_PORTAL_URL": "",
 })
 
 import pytest  # noqa: E402
@@ -23,6 +29,9 @@ from app.main import app  # noqa: E402
 @pytest.fixture(scope="session")
 def client():
     with TestClient(app) as c:
+        from app.services import camp_registration
+        # the registration automation talks HTTP to the portal; point it at the in-process MOCK portal
+        camp_registration._client = lambda: TestClient(app, base_url="http://testserver/mock-portal")
         yield c
 
 
