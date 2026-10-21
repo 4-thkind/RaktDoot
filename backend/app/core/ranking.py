@@ -17,7 +17,8 @@ WEIGHTS = {
 }
 
 
-def features(donor, patient_group: str, distance_km: float, max_radius_km: float, now_local_hour: int, now: datetime) -> dict:
+def features(donor, patient_group: str, distance_km: float, max_radius_km: float, now_local_hour: int, now: datetime,
+             component: str = "prbc") -> dict:
     proximity = max(0.0, 1.0 - distance_km / max(max_radius_km, 0.1))
     # Bayesian smoothing: a brand-new donor starts at 0.5, not 0 or 1
     response_rate = (donor.alerts_responded + 2) / (donor.alerts_sent + 4)
@@ -31,7 +32,7 @@ def features(donor, patient_group: str, distance_km: float, max_radius_km: float
         freshness = min(1.0, (now - donor.last_alerted_at).total_seconds() / 86400 / 30)
     return {
         "proximity": round(proximity, 4),
-        "group_preference": group_preference(donor.blood_group, patient_group),
+        "group_preference": group_preference(donor.blood_group, patient_group, component),
         "response_rate": round(response_rate, 4),
         "reliability": round(max(0.0, min(1.0, reliability)), 4),
         "time_of_day_fit": round(time_fit, 4),
