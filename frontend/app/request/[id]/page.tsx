@@ -83,16 +83,29 @@ function Dashboard() {
     if (!token) return;
     let es: EventSource | null = null;
     let retry: ReturnType<typeof setTimeout>;
+    let poll: ReturnType<typeof setInterval> | undefined;
+    let live = false;
+    const fetchOnce = () => api<Snapshot>(`/api/requests/${id}?t=${encodeURIComponent(token)}`).then(setSnap).catch((e) => setError(e.message));
+    // Some tunnels and proxies hold a long-lived stream back; if nothing arrives in 5 s, poll instead.
+    const watchdog = setTimeout(() => {
+      if (live) return;
+      es?.close();
+      clearTimeout(retry);
+      fetchOnce();
+      poll = setInterval(fetchOnce, 2500);
+    }, 5000);
     const open = () => {
+      if (poll) return;
       es = new EventSource(`${API_BASE}/api/requests/${id}/events?t=${encodeURIComponent(token)}`);
       es.onmessage = (ev) => {
+        live = true;
         setSnap(JSON.parse(ev.data));
         setError("");
       };
       es.onerror = () => {
         es?.close();
         // fall back to one fetch (also surfaces a bad link), then reconnect
-        api<Snapshot>(`/api/requests/${id}?t=${encodeURIComponent(token)}`).then(setSnap).catch((e) => setError(e.message));
+        fetchOnce();
         retry = setTimeout(open, 4000);
       };
     };
@@ -101,6 +114,8 @@ function Dashboard() {
     return () => {
       es?.close();
       clearTimeout(retry);
+      clearTimeout(watchdog);
+      clearInterval(poll);
       clearInterval(timer);
     };
   }, [id, token]);
