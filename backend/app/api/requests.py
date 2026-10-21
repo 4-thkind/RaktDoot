@@ -12,9 +12,9 @@ from sqlalchemy.orm import Session
 from starlette.concurrency import run_in_threadpool
 
 from ..config import settings
-from ..core.compatibility import compatible_donors, normalize_group
+from ..core.compatibility import ERAKTKOSH_COMPONENT, compatible_donors, normalize_component, normalize_group
 from ..db import get_db, session_scope, utcnow
-from ..models import Notification, Request
+from ..models import DispatchDecision, Notification, Request
 from ..services import dispatch, tinyfish_client
 from ..services.messages import GENDER_WORD
 from ..services.whatsapp import normalize_phone
@@ -37,6 +37,12 @@ class RequestIn(BaseModel):
     requester_name: str = Field(min_length=1, max_length=80)
     requester_phone: str
     language: str = "en"
+    component: str = "prbc"
+
+    @field_validator("component")
+    @classmethod
+    def _component(cls, v):
+        return normalize_component(v)
 
     @field_validator("patient_group")
     @classmethod
@@ -74,7 +80,8 @@ def preview_text(r: Request) -> str:
         "URGENT BLOOD REQUEST (Rakt Doot)\n"
         f"Patient needs: {r.patient_group} ({r.units} unit{'s' if r.units > 1 else ''})"
         f"{'' if r.group_confirmed else ' - group not yet confirmed by hospital'}\n"
-        f"Can receive from: {', '.join(compatible_donors(r.patient_group))}\n"
+        f"Component: {ERAKTKOSH_COMPONENT[r.component or 'prbc'][0]}\n"
+        f"Can receive from: {', '.join(compatible_donors(r.patient_group, r.component or 'prbc'))}\n"
         f"Patient: {r.patient_age}, {GENDER_WORD[r.patient_gender]['en']}\n"
         f"Hospital: {r.hospital_name}\n"
         f"Details and updates: {settings.public_base_url.rstrip('/')}/r/{r.share_slug}"
@@ -93,16 +100,18 @@ async def create_request(body: RequestIn):
     open_count = await run_in_threadpool(_open_count, body.requester_phone)
     if open_count >= settings.max_open_requests_per_phone:
         raise HTTPException(429, "This number already has several open requests. Close one before opening another.")
-    verified = await tinyfish_client.verify_hospital(body.hospital_name, body.hospital_address or "")
+    check = await tinyfish_client.verify_hospital(body.hospital_name, body.hospital_address or "", body.hospital_lat, body.hospital_lng)
+    verified = check["verified"]
     with session_scope() as db:
-        r = Request(**body.model_dump(), hospital_verified=verified,
+        r = Request(**body.model_dump(), hospital_verified=verified, hospital_check=check,
+                    allow_o_neg=body.patient_group == "O-" or not body.group_confirmed,
                     target_acceptances=min(body.units * 2, 12),  # over-recruit: some donors will be deferred
                     expires_at=utcnow() + timedelta(hours=settings.request_ttl_hours))
         db.add(r)
         db.flush()
         return {"id": r.id, "manage_token": r.manage_token, "share_slug": r.share_slug,
-                "preview": preview_text(r), "compatible": compatible_donors(r.patient_group),
-                "hospital_verified": verified}
+                "preview": preview_text(r), "compatible": compatible_donors(r.patient_group, r.component),
+                "hospital_verified": verified, "hospital_check": check}
 
 
 def _open_count(phone: str) -> int:
@@ -193,9 +202,14 @@ def snapshot(db: Session, r: Request) -> dict:
     first = (r.first_acceptance_at - r.dispatched_at).total_seconds() if r.first_acceptance_at and r.dispatched_at else None
     return {
         "id": r.id, "status": r.status, "patient_group": r.patient_group, "group_confirmed": r.group_confirmed,
-        "compatible": compatible_donors(r.patient_group), "units": r.units, "patient_age": r.patient_age,
+        "compatible": compatible_donors(r.patient_group, r.component or "prbc"), "units": r.units, "patient_age": r.patient_age,
+        "component": r.component or "prbc", "kind": r.kind or "emergency", "allow_o_neg": r.allow_o_neg,
         "patient_gender": r.patient_gender, "hospital": {"name": r.hospital_name, "address": r.hospital_address,
-                                                         "lat": r.hospital_lat, "lng": r.hospital_lng, "verified": r.hospital_verified},
+                                                         "lat": r.hospital_lat, "lng": r.hospital_lng, "verified": r.hospital_verified,
+                                                         "check": r.hospital_check or {}},
+        "decisions": [{"at": iso(d.created_at), "engine": d.engine, "action": d.action, "args": d.args, "reason": d.reason,
+                       "result": d.result} for d in db.scalars(select(DispatchDecision).where(DispatchDecision.request_id == r.id)
+                                                              .order_by(DispatchDecision.id.desc()).limit(30)).all()],
         "requester_name": r.requester_name, "target": r.target_acceptances, "wave": r.wave, "radius_km": r.radius_km,
         "next_wave_at": iso(r.next_wave_at), "created_at": iso(r.created_at), "dispatched_at": iso(r.dispatched_at),
         "expires_at": iso(r.expires_at), "closed_at": iso(r.closed_at), "seconds_to_first_donor": first,
@@ -246,7 +260,7 @@ def share(slug: str, db: Session = Depends(get_db)):
         raise HTTPException(404, "Request not found")
     return {
         "status": r.status, "patient_group": r.patient_group, "group_confirmed": r.group_confirmed,
-        "compatible": compatible_donors(r.patient_group), "units": r.units, "patient_age": r.patient_age,
+        "compatible": compatible_donors(r.patient_group, r.component or "prbc"), "component": r.component or "prbc", "units": r.units, "patient_age": r.patient_age,
         "patient_gender": r.patient_gender, "hospital": {"name": r.hospital_name, "address": r.hospital_address,
                                                          "lat": r.hospital_lat, "lng": r.hospital_lng},
         "created_at": iso(r.created_at), "expires_at": iso(r.expires_at), "closed_at": iso(r.closed_at),

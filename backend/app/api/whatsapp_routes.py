@@ -1,5 +1,7 @@
 """Inbound WhatsApp: Meta Cloud API webhook, Twilio webhook, and the mock channel used by
 the web simulator. All three end in bot.handle_inbound()."""
+import base64
+import binascii
 import json
 import logging
 
@@ -12,7 +14,7 @@ from sqlalchemy.orm import Session
 from ..config import settings
 from ..db import get_db, session_scope, utcnow
 from ..models import ChatMessage, Donor, Notification
-from ..services import bot, whatsapp
+from ..services import bot, vision, whatsapp
 from .common import iso
 
 router = APIRouter()
@@ -53,9 +55,26 @@ async def cloud_inbound(request: Request):
                         text = m["button"].get("text", "")
                     elif kind == "location":
                         loc = {"lat": m["location"]["latitude"], "lng": m["location"]["longitude"], "name": m["location"].get("name")}
+                    media = None
+                    if kind in ("audio", "image") and m.get(kind, {}).get("id"):
+                        media = _cloud_media(m[kind]["id"], kind, m[kind].get("mime_type"))
+                        text = m[kind].get("caption", "") if kind == "image" else ""
                     if phone:
-                        bot.handle_inbound(db, phone, text, button, loc, m.get("id"))
+                        bot.handle_inbound(db, phone, text, button, loc, m.get("id"), media)
     return {"ok": True}
+
+
+def _cloud_media(media_id: str, kind: str, mime: str | None) -> dict | None:
+    """Voice notes and photos arrive as a media id: look up the URL, then download with our token."""
+    import httpx
+    try:
+        auth = {"Authorization": f"Bearer {settings.whatsapp_token}"}
+        meta = httpx.get(f"{whatsapp.GRAPH}/{media_id}", headers=auth, timeout=15).json()
+        data = httpx.get(meta["url"], headers=auth, timeout=30).content
+        return {"kind": kind, "data": data, "mime": mime or meta.get("mime_type")}
+    except Exception as e:  # noqa: BLE001  (the bot replies "could not understand" when media is None)
+        log.warning("media download failed: %s", e)
+        return {"kind": kind, "data": b"", "mime": mime}
 
 
 def _status(db: Session, wa_id: str | None, status: str | None) -> None:
@@ -86,9 +105,19 @@ async def twilio_inbound(request: Request):
     loc = None
     if form.get("Latitude") and form.get("Longitude"):
         loc = {"lat": float(form["Latitude"]), "lng": float(form["Longitude"]), "name": form.get("Address")}
+    media = None
+    ctype = form.get("MediaContentType0", "")
+    if form.get("NumMedia", "0") != "0" and form.get("MediaUrl0") and ctype.split("/")[0] in ("audio", "image"):
+        import httpx
+        try:
+            r = httpx.get(form["MediaUrl0"], auth=(settings.twilio_account_sid, settings.twilio_auth_token), timeout=30, follow_redirects=True)
+            media = {"kind": ctype.split("/")[0], "data": r.content, "mime": ctype}
+        except Exception as e:  # noqa: BLE001
+            log.warning("twilio media download failed: %s", e)
+            media = {"kind": ctype.split("/")[0], "data": b"", "mime": ctype}
     if phone:
         with session_scope() as db:
-            bot.handle_inbound(db, phone, form.get("Body", ""), form.get("ButtonPayload") or None, loc, form.get("MessageSid"))
+            bot.handle_inbound(db, phone, form.get("Body", ""), form.get("ButtonPayload") or None, loc, form.get("MessageSid"), media)
     return PlainTextResponse("<Response></Response>", media_type="application/xml")
 
 
@@ -104,6 +133,10 @@ class MockInbound(BaseModel):
     button_id: str | None = Field(default=None, max_length=120)
     lat: float | None = None
     lng: float | None = None
+    media_kind: str | None = Field(default=None, pattern="^(audio|image)$")
+    media_base64: str | None = Field(default=None, max_length=12_000_000)  # ~8 MB file
+    media_mime: str | None = Field(default=None, max_length=60)
+    media_sample: str | None = Field(default=None, max_length=60)  # a bundled sample file name
 
 
 @router.get("/api/mock/chats", dependencies=[Depends(mock_only)])
@@ -150,6 +183,8 @@ def mock_chat(phone: str, db: Session = Depends(get_db)):
                   "opted_out": d.opted_out} if d else None,
         "messages": [{"id": m.id, "direction": m.direction, "kind": m.kind, "body": m.body,
                       "options": m.payload.get("options"), "location": m.payload.get("location"),
+                      "media": m.payload.get("media"), "transcript": m.payload.get("transcript"), "stt": m.payload.get("stt"),
+                      "audio": m.payload.get("audio"), "tts": m.payload.get("tts"), "sms_from": m.payload.get("sms_from"),
                       "at": iso(m.created_at)} for m in msgs],
     }
 
@@ -160,6 +195,20 @@ def mock_inbound(body: MockInbound, db: Session = Depends(get_db)):
     if not phone:
         raise HTTPException(422, "invalid phone")
     loc = {"lat": body.lat, "lng": body.lng, "name": "Shared location"} if body.lat is not None and body.lng is not None else None
-    bot.handle_inbound(db, phone, body.text, body.button_id, loc)
+    media = None
+    if body.media_kind:
+        if body.media_sample:
+            data = vision.sample_bytes(body.media_sample)
+            if data is None:
+                raise HTTPException(404, "unknown sample")
+            mime = "audio/mpeg" if body.media_sample.endswith(".mp3") else "audio/wav" if body.media_sample.endswith(".wav") else "image/jpeg"
+        else:
+            try:
+                data = base64.b64decode((body.media_base64 or "").split(",")[-1], validate=True)
+            except (binascii.Error, ValueError):
+                raise HTTPException(422, "media_base64 is not valid base64")
+            mime = body.media_mime or ("audio/ogg" if body.media_kind == "audio" else "image/jpeg")
+        media = {"kind": body.media_kind, "data": data, "mime": mime}
+    bot.handle_inbound(db, phone, body.text, body.button_id, loc, None, media)
     db.commit()
     return mock_chat(phone, db)
