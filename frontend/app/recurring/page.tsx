@@ -30,7 +30,7 @@ function Schedule({ rota }: { rota: Rota }) {
       <ul className="register" style={{ marginTop: 12 }}>
         {[...byDate.entries()].slice(0, 10).map(([d, slots]) => (
           <li key={d} style={{ gridTemplateColumns: "120px 1fr" }}>
-            <div className="num" style={{ fontWeight: 600 }}>{new Date(d).toLocaleDateString(lang === "hi" ? "hi-IN" : "en-IN", { day: "numeric", month: "short", year: "numeric" })}</div>
+            <div className="num" style={{ fontWeight: 600 }}>{new Date(d).toLocaleDateString(`${lang}-IN`, { day: "numeric", month: "short", year: "numeric" })}</div>
             <div className="split" style={{ gridColumn: "auto" }}>
               {slots.map((s) => (
                 <span key={s.id} className={`badge ${s.status === "confirmed" ? "good" : s.status === "unfilled" || s.status === "declined" ? "" : "on"}`}>

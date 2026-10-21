@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { GuidePanel } from "@/components/GuidePanel";
 import { useLang } from "@/lib/i18n";
+import { REGIONAL_SECTIONS } from "@/lib/locales/how-it-works";
 
 const SECTIONS = {
+  ...REGIONAL_SECTIONS,
   en: [
     ["Stock first, people second", "A blood centre's stock is already screened and tested, so it is the safest and usually fastest source. Rakt Doot checks it first. Our TinyFish web agents read the official stock records of every blood centre in the hospital's district and turn them into clean, structured data; once an agent has learned the route, the same lookup is replayed in seconds and repaired automatically if the source changes. Results are cached for 15 minutes per district, and every list shows when it was fetched."],
     ["Donors only when they can help", "If no centre within 25 km has usable stock, you can ask donors. We message only people whose group this patient can receive, who live near the hospital, who are not in their rest period and who have not had an alert in the last day. We start with ten donors within 5 km, wait five minutes, and widen to 10, 25 and 40 km only if needed. Exact-group donors come before other compatible groups, and O− donors come last, so that scarce group is kept for patients who truly need it."],
@@ -39,7 +41,7 @@ export default function HowItWorks() {
             <p>{body}</p>
           </section>
         ))}
-        <h2 className="h2">Sources</h2>
+        <h2 className="h2">{t("guide_sources")}</h2>
         <ul className="small">
           <li><a href="https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/stockAvailability.cnt" target="_blank" rel="noreferrer">Official blood stock records (MoHFW)</a></li>
                     <li><a href="https://vivo.weill.cornell.edu/display/pubid39433405" target="_blank" rel="noreferrer">Blood access in the EAG states, 2024</a></li>

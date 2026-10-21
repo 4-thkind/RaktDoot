@@ -5,38 +5,140 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ApiError } from "@/lib/api";
 import { signup } from "@/lib/auth";
-import { useLang } from "@/lib/i18n";
+import { useLang, type Lang } from "@/lib/i18n";
 
 const C = {
-  title: { en: "Create your account", hi: "अपना अकाउंट बनाएं" },
-  lede: {
-    en: "One account to track your requests. We will send a welcome message to your WhatsApp.",
-    hi: "अपने अनुरोधों पर नज़र रखने के लिए एक अकाउंट। हम आपके WhatsApp पर स्वागत संदेश भेजेंगे।",
+  "title": {
+    "en": "Create your account",
+    "hi": "अपना अकाउंट बनाएं",
+    "mr": "तुमचे खाते तयार करा",
+    "bn": "আপনার অ্যাকাউন্ট তৈরি করুন",
+    "ta": "உங்கள் கணக்கை உருவாக்குங்கள்"
   },
-  name: { en: "Full name", hi: "पूरा नाम" },
-  email: { en: "Email", hi: "ईमेल" },
-  phone: { en: "WhatsApp number", hi: "WhatsApp नंबर" },
-  phone_help: { en: "10-digit mobile number. This is where the welcome message goes.", hi: "10 अंकों का मोबाइल नंबर। स्वागत संदेश इसी पर आएगा।" },
-  password: { en: "Password", hi: "पासवर्ड" },
-  password_help: { en: "At least 8 characters.", hi: "कम से कम 8 अक्षर।" },
-  consent: {
-    en: "Yes, Rakt Doot may message me on WhatsApp. I can reply STOP at any time.",
-    hi: "हाँ, रक्त दूत मुझे WhatsApp पर संदेश भेज सकता है। मैं कभी भी STOP भेज सकता/सकती हूँ।",
+  "lede": {
+    "en": "One account to track your requests. We will send a welcome message to your WhatsApp.",
+    "hi": "अपने अनुरोधों पर नज़र रखने के लिए एक अकाउंट। हम आपके WhatsApp पर स्वागत संदेश भेजेंगे।",
+    "mr": "तुमच्या विनंत्यांचा मागोवा घेण्यासाठी एक खाते. तुमच्या WhatsApp वर स्वागत संदेश पाठवू.",
+    "bn": "আপনার অনুরোধগুলি দেখতে একটি অ্যাকাউন্ট। আপনার WhatsApp-এ স্বাগত বার্তা পাঠাব।",
+    "ta": "உங்கள் கோரிக்கைகளைக் கண்காணிக்க ஒரு கணக்கு. உங்கள் WhatsApp-க்கு வரவேற்புச் செய்தி அனுப்புவோம்."
   },
-  submit: { en: "Sign up", hi: "साइन अप करें" },
-  busy: { en: "Creating account...", hi: "अकाउंट बन रहा है..." },
-  have: { en: "Already have an account?", hi: "पहले से अकाउंट है?" },
-  login: { en: "Log in", hi: "लॉग इन करें" },
-  done_t: { en: "You are in.", hi: "आप जुड़ गए।" },
-  done_wa: { en: "A welcome message is on its way to your WhatsApp.", hi: "आपके WhatsApp पर स्वागत संदेश भेजा जा रहा है।" },
-  done_confirm: { en: "Almost there. We emailed you a link: confirm your email, then log in. Your WhatsApp welcome follows your first login.", hi: "बस थोड़ा और। हमने आपको एक लिंक ईमेल किया है: ईमेल कन्फर्म करें, फिर लॉग इन करें। WhatsApp स्वागत संदेश पहले लॉग इन के बाद आएगा।" },
-  done_nowa: { en: "Your account is ready. You chose not to get WhatsApp messages.", hi: "आपका अकाउंट तैयार है। आपने WhatsApp संदेश नहीं चुने।" },
-  go: { en: "Continue", hi: "आगे बढ़ें" },
+  "name": {
+    "en": "Full name",
+    "hi": "पूरा नाम",
+    "mr": "पूर्ण नाव",
+    "bn": "পুরো নাম",
+    "ta": "முழுப் பெயர்"
+  },
+  "email": {
+    "en": "Email",
+    "hi": "ईमेल",
+    "mr": "ईमेल",
+    "bn": "ইমেল",
+    "ta": "மின்னஞ்சல்"
+  },
+  "phone": {
+    "en": "WhatsApp number",
+    "hi": "WhatsApp नंबर",
+    "mr": "WhatsApp नंबर",
+    "bn": "WhatsApp নম্বর",
+    "ta": "WhatsApp எண்"
+  },
+  "phone_help": {
+    "en": "10-digit mobile number. This is where the welcome message goes.",
+    "hi": "10 अंकों का मोबाइल नंबर। स्वागत संदेश इसी पर आएगा।",
+    "mr": "10 अंकी मोबाइल नंबर. स्वागत संदेश यावर येईल.",
+    "bn": "10 সংখ্যার মোবাইল নম্বর। স্বাগত বার্তা এখানে যাবে।",
+    "ta": "10 இலக்க அலைபேசி எண். வரவேற்புச் செய்தி இந்த எண்ணுக்கு வரும்."
+  },
+  "password": {
+    "en": "Password",
+    "hi": "पासवर्ड",
+    "mr": "पासवर्ड",
+    "bn": "পাসওয়ার্ড",
+    "ta": "கடவுச்சொல்"
+  },
+  "password_help": {
+    "en": "At least 8 characters.",
+    "hi": "कम से कम 8 अक्षर।",
+    "mr": "किमान 8 अक्षरे.",
+    "bn": "কমপক্ষে 8টি অক্ষর।",
+    "ta": "குறைந்தது 8 எழுத்துகள்."
+  },
+  "consent": {
+    "en": "Yes, Rakt Doot may message me on WhatsApp. I can reply STOP at any time.",
+    "hi": "हाँ, रक्त दूत मुझे WhatsApp पर संदेश भेज सकता है। मैं कभी भी STOP भेज सकता/सकती हूँ।",
+    "mr": "हो, रक्त दूत मला WhatsApp वर संदेश पाठवू शकतो. मी कधीही STOP पाठवू शकतो/शकते.",
+    "bn": "হ্যাঁ, রক্ত দূত আমাকে WhatsApp-এ বার্তা পাঠাতে পারে। যেকোনো সময় STOP লিখতে পারি।",
+    "ta": "ஆம், ரக்த் தூத் எனக்கு WhatsApp செய்தி அனுப்பலாம். எந்த நேரத்திலும் STOP எனப் பதிலளிக்கலாம்."
+  },
+  "submit": {
+    "en": "Sign up",
+    "hi": "साइन अप करें",
+    "mr": "नोंदणी करा",
+    "bn": "নিবন্ধন করুন",
+    "ta": "பதிவுசெய்யுங்கள்"
+  },
+  "busy": {
+    "en": "Creating account...",
+    "hi": "अकाउंट बन रहा है...",
+    "mr": "खाते तयार होत आहे...",
+    "bn": "অ্যাকাউন্ট তৈরি হচ্ছে...",
+    "ta": "கணக்கை உருவாக்குகிறோம்..."
+  },
+  "have": {
+    "en": "Already have an account?",
+    "hi": "पहले से अकाउंट है?",
+    "mr": "आधीच खाते आहे?",
+    "bn": "আগেই অ্যাকাউন্ট আছে?",
+    "ta": "ஏற்கெனவே கணக்கு உள்ளதா?"
+  },
+  "login": {
+    "en": "Log in",
+    "hi": "लॉग इन करें",
+    "mr": "लॉग इन करा",
+    "bn": "লগ ইন করুন",
+    "ta": "உள்நுழையுங்கள்"
+  },
+  "done_t": {
+    "en": "You are in.",
+    "hi": "आप जुड़ गए।",
+    "mr": "तुम्ही जोडले गेलात.",
+    "bn": "আপনি যুক্ত হয়েছেন।",
+    "ta": "நீங்கள் இணைந்துவிட்டீர்கள்."
+  },
+  "done_wa": {
+    "en": "A welcome message is on its way to your WhatsApp.",
+    "hi": "आपके WhatsApp पर स्वागत संदेश भेजा जा रहा है।",
+    "mr": "तुमच्या WhatsApp वर स्वागत संदेश येत आहे.",
+    "bn": "আপনার WhatsApp-এ স্বাগত বার্তা যাচ্ছে।",
+    "ta": "உங்கள் WhatsApp-க்கு வரவேற்புச் செய்தி வருகிறது."
+  },
+  "done_confirm": {
+    "en": "Almost there. We emailed you a link: confirm your email, then log in. Your WhatsApp welcome follows your first login.",
+    "hi": "बस थोड़ा और। हमने आपको एक लिंक ईमेल किया है: ईमेल कन्फर्म करें, फिर लॉग इन करें। WhatsApp स्वागत संदेश पहले लॉग इन के बाद आएगा।",
+    "mr": "जवळजवळ झाले. ईमेलवर पाठवलेल्या लिंकवरून पुष्टी करा, नंतर लॉग इन करा. पहिल्या लॉग इननंतर WhatsApp स्वागत संदेश येईल.",
+    "bn": "প্রায় হয়ে গেছে। ইমেলের লিঙ্কে নিশ্চিত করে লগ ইন করুন। প্রথম লগ ইনের পরে WhatsApp-এ স্বাগত বার্তা যাবে।",
+    "ta": "கிட்டத்தட்ட முடிந்தது. மின்னஞ்சலில் அனுப்பிய இணைப்பில் உறுதிசெய்து உள்நுழையுங்கள். முதல் உள்நுழைவுக்குப் பின் WhatsApp வரவேற்புச் செய்தி வரும்."
+  },
+  "done_nowa": {
+    "en": "Your account is ready. You chose not to get WhatsApp messages.",
+    "hi": "आपका अकाउंट तैयार है। आपने WhatsApp संदेश नहीं चुने।",
+    "mr": "तुमचे खाते तयार आहे. तुम्ही WhatsApp संदेश नको असे निवडले आहे.",
+    "bn": "আপনার অ্যাকাউন্ট তৈরি। আপনি WhatsApp বার্তা না নেওয়া বেছে নিয়েছেন।",
+    "ta": "உங்கள் கணக்கு தயார். WhatsApp செய்திகள் வேண்டாம் எனத் தேர்ந்தெடுத்துள்ளீர்கள்."
+  },
+  "go": {
+    "en": "Continue",
+    "hi": "आगे बढ़ें",
+    "mr": "पुढे",
+    "bn": "এগিয়ে যান",
+    "ta": "தொடருங்கள்"
+  }
 };
 
 export default function Signup() {
   const { lang } = useLang();
-  const L = (x: { en: string; hi: string }) => x[lang];
+  const L = (x: Record<Lang, string>) => x[lang];
   const router = useRouter();
   const [f, setF] = useState({ name: "", email: "", phone: "", password: "", consent: true });
   const [err, setErr] = useState<string | null>(null);

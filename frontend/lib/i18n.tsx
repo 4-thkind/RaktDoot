@@ -1,8 +1,19 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { REGIONAL } from "./locales/regional";
 
-export type Lang = "en" | "hi";
+export const LANGUAGES = [
+  { code: "en", label: "English" },
+  { code: "hi", label: "हिन्दी" },
+  { code: "mr", label: "मराठी" },
+  { code: "bn", label: "বাংলা" },
+  { code: "ta", label: "தமிழ்" },
+] as const;
+export type Lang = (typeof LANGUAGES)[number]["code"];
+export function isLang(value: unknown): value is Lang {
+  return LANGUAGES.some(({ code }) => code === value);
+}
 
 const DICT = {
   brand: { en: "Rakt Doot", hi: "रक्त दूत" },
@@ -13,7 +24,7 @@ const DICT = {
   nav_login: { en: "Log in", hi: "लॉग इन" },
   nav_signup: { en: "Sign up", hi: "साइन अप" },
   nav_logout: { en: "Log out", hi: "लॉग आउट" },
-  lang_switch: { en: "हिन्दी", hi: "English" },
+  lang_switch: { en: "Language", hi: "भाषा" },
 
   hero_title: { en: "Find blood for a patient, now.", hi: "मरीज़ के लिए अभी खून ढूंढें।" },
   hero_body: {
@@ -363,11 +374,11 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     try {
       const saved = localStorage.getItem("rd:lang");
-      if (saved === "hi" || saved === "en") setLangState(saved);
+      if (isLang(saved)) setLangState(saved);
     } catch {}
   }, []);
   useEffect(() => {
-    document.documentElement.lang = lang === "hi" ? "hi" : "en";
+    document.documentElement.lang = lang;
   }, [lang]);
   const setLang = useCallback((l: Lang) => {
     setLangState(l);
@@ -377,7 +388,9 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
   }, []);
   const t = useCallback(
     (k: Key, vars?: Record<string, string | number>) => {
-      let s: string = DICT[k][lang] ?? DICT[k].en;
+      let s: string = lang === "en" || lang === "hi"
+        ? DICT[k][lang]
+        : REGIONAL[lang][k] ?? DICT[k].en;
       if (vars) for (const [v, val] of Object.entries(vars)) s = s.replaceAll(`{${v}}`, String(val));
       return s;
     },

@@ -14,8 +14,8 @@
   --ochre-tint: #f6ebcd;
   --green: #2f6b4f;
 
-  --serif: "Bodoni Moda Variable", "Bodoni Moda", "Noto Serif Devanagari", "Didot", "Times New Roman", serif;
-  --sans: "Noto Sans", "Noto Sans Devanagari", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --serif: "Bodoni Moda Variable", "Bodoni Moda", "Noto Serif Devanagari", "Noto Sans Bengali", "Noto Sans Tamil", "Didot", "Times New Roman", serif;
+  --sans: "Noto Sans", "Noto Sans Devanagari", "Noto Sans Bengali", "Noto Sans Tamil", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   --radius: 4px;
   --tap: 52px;
@@ -77,16 +77,29 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 32px 0; }
 
 /* ---------- header ---------- */
 .idbar { background: var(--burgundy); color: var(--ivory); }
-.idbar .wrap { display: flex; align-items: center; gap: 14px; min-height: 48px; }
-.wordmark { font-family: var(--serif); font-size: 22px; font-weight: 500; color: var(--ivory); text-decoration: none; letter-spacing: 0.01em; display: flex; align-items: baseline; gap: 10px; }
+.idbar .wrap { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; min-height: 80px; padding-top: 12px; padding-bottom: 12px; }
+.wordmark { font-family: var(--serif); font-size: clamp(32px, 4vw, 42px); line-height: 1.25; font-weight: 500; color: var(--ivory); text-decoration: none; letter-spacing: 0.01em; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-width: 0; max-width: 100%; }
 .wordmark small { font-family: var(--sans); font-size: 13px; opacity: 0.82; font-weight: 400; }
-.idbar .lang { margin-left: auto; background: transparent; border: 1px solid rgba(255, 252, 239, 0.5); color: var(--ivory); border-radius: var(--radius); padding: 4px 12px; min-height: 34px; cursor: pointer; font-size: 15px; }
+.idbar .lang { margin-left: auto; background: transparent; border: 1px solid rgba(255, 252, 239, 0.5); color: var(--ivory); border-radius: var(--radius); padding: 8px 12px; min-height: 44px; max-width: 100%; cursor: pointer; font-size: 16px; }
+.idbar .lang option { background: var(--ivory); color: var(--ink); }
+.idbar :focus-visible { outline-color: var(--ivory); }
+:is(:lang(mr), :lang(bn), :lang(ta)) :is(.display, .h1, .h2, .wordmark) { letter-spacing: 0; line-height: 1.35; }
 .idbar .lang:hover { background: rgba(255, 252, 239, 0.12); }
 .navbar { border-bottom: 1px solid var(--rule); }
 .navbar .wrap { display: flex; gap: 22px; min-height: 46px; align-items: center; overflow-x: auto; }
 .navbar a { color: var(--ink); text-decoration: none; font-size: 15px; white-space: nowrap; padding: 10px 0; border-bottom: 2px solid transparent; }
 .navbar a[aria-current="page"] { border-bottom-color: var(--burgundy); color: var(--burgundy); }
 .navbar a:hover { color: var(--burgundy); }
+.header-actions { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+.idbar .header-actions .lang { margin-left: 0; }
+.tools-dropdown { position: relative; }
+.menu-toggle { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; background: transparent; color: var(--ivory); border: 1px solid rgba(255, 252, 239, 0.5); border-radius: var(--radius); cursor: pointer; }
+.menu-toggle:hover, .menu-toggle[aria-expanded="true"] { background: rgba(255, 252, 239, 0.12); }
+.tools-menu { position: absolute; top: calc(100% + 10px); right: 0; z-index: 50; width: min(280px, calc(100vw - 32px)); padding: 6px; background: var(--ivory); border: 1px solid var(--rule-strong); border-radius: var(--radius); box-shadow: 0 8px 24px rgba(42, 33, 28, 0.18); }
+.tools-menu a { display: flex; align-items: center; min-height: 44px; padding: 10px 12px; color: var(--burgundy); border-radius: var(--radius); font-size: 15px; line-height: 1.4; text-decoration: none; overflow-wrap: anywhere; }
+.tools-menu a:hover { background: var(--paper); }
+.tools-menu a[aria-current="page"] { background: var(--burgundy-tint); font-weight: 600; }
+.idbar .tools-menu :focus-visible { outline-color: var(--burgundy); }
 
 /* ---------- footer ---------- */
 .footer { border-top: 1px solid var(--rule); margin-top: 64px; padding: 28px 0 40px; color: var(--muted); font-size: 14px; }

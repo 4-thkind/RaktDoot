@@ -5,21 +5,63 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ApiError } from "@/lib/api";
 import { login } from "@/lib/auth";
-import { useLang } from "@/lib/i18n";
+import { useLang, type Lang } from "@/lib/i18n";
 
 const C = {
-  title: { en: "Log in", hi: "लॉग इन करें" },
-  email: { en: "Email", hi: "ईमेल" },
-  password: { en: "Password", hi: "पासवर्ड" },
-  submit: { en: "Log in", hi: "लॉग इन" },
-  busy: { en: "Logging in...", hi: "लॉग इन हो रहा है..." },
-  new: { en: "New here?", hi: "नए हैं?" },
-  signup: { en: "Create an account", hi: "अकाउंट बनाएं" },
+  "title": {
+    "en": "Log in",
+    "hi": "लॉग इन करें",
+    "mr": "लॉग इन करा",
+    "bn": "লগ ইন করুন",
+    "ta": "உள்நுழையுங்கள்"
+  },
+  "email": {
+    "en": "Email",
+    "hi": "ईमेल",
+    "mr": "ईमेल",
+    "bn": "ইমেল",
+    "ta": "மின்னஞ்சல்"
+  },
+  "password": {
+    "en": "Password",
+    "hi": "पासवर्ड",
+    "mr": "पासवर्ड",
+    "bn": "পাসওয়ার্ড",
+    "ta": "கடவுச்சொல்"
+  },
+  "submit": {
+    "en": "Log in",
+    "hi": "लॉग इन",
+    "mr": "लॉग इन",
+    "bn": "লগ ইন",
+    "ta": "உள்நுழையுங்கள்"
+  },
+  "busy": {
+    "en": "Logging in...",
+    "hi": "लॉग इन हो रहा है...",
+    "mr": "लॉग इन होत आहे...",
+    "bn": "লগ ইন হচ্ছে...",
+    "ta": "உள்நுழைகிறோம்..."
+  },
+  "new": {
+    "en": "New here?",
+    "hi": "नए हैं?",
+    "mr": "इथे नवीन आहात?",
+    "bn": "এখানে নতুন?",
+    "ta": "இங்கே புதிதா?"
+  },
+  "signup": {
+    "en": "Create an account",
+    "hi": "अकाउंट बनाएं",
+    "mr": "खाते तयार करा",
+    "bn": "অ্যাকাউন্ট তৈরি করুন",
+    "ta": "கணக்கை உருவாக்குங்கள்"
+  }
 };
 
 export default function Login() {
   const { lang } = useLang();
-  const L = (x: { en: string; hi: string }) => x[lang];
+  const L = (x: Record<Lang, string>) => x[lang];
   const router = useRouter();
   const [f, setF] = useState({ email: "", password: "" });
   const [err, setErr] = useState<string | null>(null);

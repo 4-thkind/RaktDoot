@@ -30,7 +30,7 @@ export default function Camps() {
     api<Placement>("/api/camps/placement?k=5").then(setPlace).catch((e) => setError(e.message));
   }, []);
 
-  const fmt = (d: string) => new Date(d).toLocaleDateString(lang === "hi" ? "hi-IN" : "en-IN", { weekday: "short", day: "numeric", month: "short" });
+  const fmt = (d: string) => new Date(d).toLocaleDateString(`${lang}-IN`, { weekday: "short", day: "numeric", month: "short" });
 
   return (
     <div className="wrap stack" style={{ paddingTop: 32, ["--gap" as string]: "18px" }}>
