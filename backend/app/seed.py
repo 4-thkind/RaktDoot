@@ -48,10 +48,38 @@ CLUSTERS = [(28.535, 77.215, 0.35, 0.035), (28.630, 77.210, 0.2, 0.05), (28.460,
 
 
 def seed_blood_banks(db: Session) -> int:
+    """Real eRaktKosh directory snapshot (W2) when shipped; the small hand-made list otherwise."""
+    from .services import directory
+
+    rows = directory.load_snapshot()
+    if rows:
+        return directory.upsert(db, rows, source="eraktkosh")["added"]
     for name, addr, lat, lng, district, state, cat in BLOOD_BANKS:
         db.add(BloodBank(name=name, address=addr, lat=lat, lng=lng, district=district, state=state,
                          category=cat, source="seed (approximate coordinates)"))
     return len(BLOOD_BANKS)
+
+
+def seed_extras(db: Session) -> dict:
+    """Demo data for the new features, all labelled: recurring-rota opt-ins on synthetic donors,
+    one SYNTHETIC thalassemia patient with a 6-month rota, sample camps, the family-guide KB."""
+    from datetime import date
+
+    from .models import RecurringNeed
+    from .services import camps, guide, recurring
+
+    rng = random.Random(7)
+    for d in db.query(Donor).filter(Donor.synthetic.is_(True)).all():
+        d.recurring_opt_in = rng.random() < 0.35
+    db.flush()
+    need = RecurringNeed(patient_label="Baby A. (synthetic)", patient_group="B+", component="prbc", units=2, interval_days=21,
+                         next_due=date.today() + timedelta(days=2), hospital_name="Sir Ganga Ram Hospital", hospital_lat=28.6387,
+                         hospital_lng=77.1895, requester_name="Thalassemia family (synthetic)", requester_phone="910000000001",
+                         max_km=20, synthetic=True)
+    db.add(need)
+    db.flush()
+    slots = recurring.rebuild(db, need)
+    return {"camps": camps.seed_sample(db), "guide_chunks": guide.load(db), "rota_slots": len(slots)}
 
 
 def seed_donors(db: Session, n: int = 200, seed: int = 42) -> int:
@@ -99,5 +127,9 @@ def reset_and_seed(db: Session, donors: int = 200) -> dict:
         db.execute(table.delete())
     banks = seed_blood_banks(db)
     ds = seed_donors(db, donors)
+    db.flush()
+    extras = seed_extras(db)
     db.commit()
-    return {"blood_banks": banks, "donors": ds}
+    from .services import forecast
+    forecast._cache.clear()
+    return {"blood_banks": banks, "donors": ds, **extras}
