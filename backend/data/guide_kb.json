@@ -1,0 +1,287 @@
+{
+ "built_at": "2026-10-20T14:29:18+00:00",
+ "sources": [
+  "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/eraktkoshfaq.cnt",
+  "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/donateblood.cnt",
+  "https://dghs.mohfw.gov.in/bts.php",
+  "https://bsah.delhi.gov.in/bsah/blood-donation"
+ ],
+ "chunks": [
+  {
+   "source_title": "eRaktKosh FAQs (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/eraktkoshfaq.cnt",
+   "text": "Need Blood Immediately. Which app finds patients blood requirement as soon as possible ? At google play store, you can search eraktkosh. Once installed, using GPS technology the app locate nearest blood bank along with blood availability.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh FAQs (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/eraktkoshfaq.cnt",
+   "text": "I had alcohol before going to donate blood. Is it Okay? No. We do not take blood from anyone under the influence of alcohol. This is because being intoxicated can affect your ability to understand and answer the donor questionnaire and declaration.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh FAQs (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/eraktkoshfaq.cnt",
+   "text": "I am taking antibiotics. Can I donate blood? It depends on why you are taking the antibiotics and it may also depend after doctor counselling.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh FAQs (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/eraktkoshfaq.cnt",
+   "text": "Are there any side effects of Blood donations? There are no side effects of blood donation. The blood bank staff ensures that your blood donation is a good experience so as to make you a regular blood donor. There are a number of people who have donated more than 25-100 times in their entire lifetime.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh FAQs (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/eraktkoshfaq.cnt",
+   "text": "How often can I donate Blood ? After every three –four months you can donate blood.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh FAQs (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/eraktkoshfaq.cnt",
+   "text": "What should I eat before blood-donation ? Anything that you normally eat at home. Eating a light snacks and having a soft drink before blood donation is sufficient.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh FAQs (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/eraktkoshfaq.cnt",
+   "text": "How to check Platelet unit in eraktkosh app? The blood stock can be searched by default as Whole Blood at Stock availability page. You can change component type as Platelet then search again.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh FAQs (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/eraktkoshfaq.cnt",
+   "text": "How can i check the nearest blood bank from my current location? Use eRaktkosh mobile App, enable the location, and then search nearest blood bank, then you can see distance wise list of blood banks.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh FAQs (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/eraktkoshfaq.cnt",
+   "text": "How to verify blood unit is available or not on current date? You can see last updated date or LIVE status into blood availability option.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh FAQs (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/eraktkoshfaq.cnt",
+   "text": "How does age affects my ability to donate blood? Minimum age for whole blood donation is 18 years in India. The maximum age for blood donation depends on the kind of donation.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh FAQs (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/eraktkoshfaq.cnt",
+   "text": "Where can I find details of camps being conducted by various blood banks ? . Many camps also accept online pre-registration.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh: About Blood Donation (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/donateblood.cnt",
+   "text": "another person is the gift of life i.e. blood. It is the essence of life. Your blood saves more than one life when it is separated into its components (red blood cells, plasma etc.). Blood is needed regularly for patients with diseases such as thalassemia and hemophilia, and also for the treatment of injuries after an accident, major surgeries, anemia, etc.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh: About Blood Donation (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/donateblood.cnt",
+   "text": "Did you know that people who donate blood are 88% less likely to suffer a heart attack and 33% less likely to acquire any type of cardiovascular disease. When you donate blood, it removes 225 to 250 milligrams of iron from your body, hence reducing the risk of heart disease. Blood Center performs numerous tests on the donated blood. Therefore regular blood donation helps in sheilding you from serious diseases.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh: About Blood Donation (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/donateblood.cnt",
+   "text": "One unit of donated blood can save up to three lives. You can donate blood every three months. It only takes 48 hours for your body fluids to be completely replenished. to be eight percent of body weight. There are 100,000 miles of blood vessels in an adult human body. White blood cells make up about 1% of your blood.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh: About Blood Donation (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/donateblood.cnt",
+   "text": "According to a 2012 World Health Organisation (WHO) report, only nine million units are collected annually, while the need is for 12 million units. Delhi NCR alone faces a shortage of 100,000 units per year. The shelf-life of donated blood is 35 to 42 days. There is a constant need to replenish stocks in our blood banks. Healthy donors are between the age of 18 to 65 years.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh: About Blood Donation (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/donateblood.cnt",
+   "text": "Statistics show that there are 234 million major operations in India, 63 million trauma-induced surgeries, 31 million cancer-related procedures and 10 million pregnancy related complications which require blood transfusions. Donating blood is a safe, simple, and rewarding experience that usually takes 30 minutes.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh: About Blood Donation (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/donateblood.cnt",
+   "text": "Requirement before Blood Donation is that your weight should be atleast 45 kgs , be at least 18 years old and be healthy in general. If you have any particular health concerns then inform the blood bank at the time of blood donation. During pre-donation screening, a blood bank employee will ask you some questions about your health, lifestyle, and disease risk factors. All of this information is confidential.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh: About Blood Donation (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/donateblood.cnt",
+   "text": "An employee will perform a short health exam, taking your pulse, temperature and blood pressure. A drop of blood from your finger will also be tested to ensure that your blood iron level is sufficient for you to donate. All medical equipment used for this test, as well as during the donation process, is sterile, used only once and then disposed.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh: About Blood Donation (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/donateblood.cnt",
+   "text": "Once the pre-donation screening is finished, you will proceed to a donor bed where your arm will be cleaned with an antiseptic, and a professional will use a blood donation kit to draw blood from a vein in your arm. If you are allergic to iodine, be sure to tell the phlebotomist at this point. During the donation process, you will donate one unit of blood; this takes about six to ten minutes.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh: About Blood Donation (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/donateblood.cnt",
+   "text": "Following your donation, you will receive refreshments. After donating, it is recommended that you increase your fluid intake for the next 24 to 48 hours; avoid strenuous physical exertion, heavy lifting or pulling with the donation arm for about five hours; and eat well balanced meals for the next 24 hours.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "eRaktKosh: About Blood Donation (MoHFW)",
+   "source_url": "https://eraktkosh.mohfw.gov.in/BLDAHIMS/bloodbank/donateblood.cnt",
+   "text": "Smoking and alcohol consumption is not recommended after donation. Although donors seldom experience discomfort after donating, if you feel light-headed, lie down until the feeling passes.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "Blood is a vital resource in medical treatment and emergency care, with the annual requirement for blood in the country estimated at 14.6 million units. To ensure a safe and adequate blood supply, significant policy reforms have been implemented over the years. In 1996, a landmark Supreme Court judgment led to the complete ban on professional blood donation, marking a turning point in the country’s approach to blood collection. This decision was followed by the establishment of the National Blood Transfusion Council (NBTC) and State Blood Transfusion Councils (SBTCs), which facilitated the regulation and licensing of all blood banks.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "In line with these developments, the National Blood Policy was formulated in 2002 to provide a structured framework for safe and efficient blood transfusion services. The estimation of national blood requirements was further refined with the National Blood Requirement Estimation conducted in 2016-17. A key feature of this system is the mandatory screening of all blood donations for five Transfusion Transmissible Infections (TTIs), namely HIV/AIDS, Hepatitis B, Hepatitis C, Syphilis, and Malaria, to ensure the safety of blood transfusions.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "The overarching goal of this initiative is to promote voluntary, non-remunerated blood donation through a well-coordinated and networked blood transfusion service, ensuring that safe and sufficient blood is available to meet the medical needs of the population. Objectives of Blood Transfusion Services (BTS)",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "Blood Transfusion Services ensures that Blood and Components (Whole Blood/ Packed Red Cells/ Plasma/ Platelets, etc.) are Available (Adequate Blood Collection to fulfill need) Accessible (Enough reach where it is needed) Safe (Not cause harm, especially TTI) Standard quality (Provide clinical gain)",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "The government has adopted a comprehensive approach towards strengthening blood transfusion services, key strategies for which include: Increasing regular voluntary non-remunerated blood donation to meet the safe blood requirements of safe blood in the country;",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "Promoting component preparation and availability along with rational use of blood in health care facilities and building capacity of health care providers to achieve this objective; Enhancing blood access through a well networked regionally coordinated blood transfusion services; Establishing Quality Management Systems to ensure safe and quality blood and Building implementation structures and referral linkages.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "National Blood Transfusion Council (NBTC) NBTC is the policy-formulating apex body for all matters about Blood Transfusion Services for the country. Similarly, State Blood Transfusion Councils are set up at the State level to adopt/ adapt and implement the policy directives of NBTC. To coordinate national-level policy and strategy for the promotion of Voluntary Blood Donation",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "To support capacity building in blood services, including technical education Blood Transfusion Services (BTS)",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "has been marked by significant reforms, policy development, and innovative initiatives to ensure safe and adequate blood supply across the nation. The evolution from fragmented and unregulated services to a robust, centralized system reflects the commitment of policymakers, healthcare institutions, and stakeholders.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "The transformation of BTS in India began with the Supreme Court's landmark judgment in 1996, which directed the government to overhaul the blood transfusion system. This judgment led to the establishment of the National Blood Transfusion Council (NBTC) and State Blood Transfusion Councils (SBTCs) as central bodies to govern blood services. Mandatory licensing of blood centers under the Drugs and Cosmetics Act, of 1940, was enforced in 1997 to ensure compliance with safety standards. This period also saw the complete ban on paid blood donations by 1998, marking a shift towards a system relying on voluntary, non-remunerated blood donors.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "The National Blood Policy (NBP), introduced in 2002, provided a comprehensive framework to enhance blood safety. It outlined strategies for donor motivation, appropriate clinical use of blood, and the establishment of Regional Blood Transfusion Centers (RBTCs) for centralized collection and testing. The Action Plan for Blood Safety (2003) complemented the NBP by focusing on the establishment of component separation units and ensuring uniformity in blood transfusion practices.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "The National AIDS Control Organization (NACO) played a pivotal role in BTS under its Blood Safety program from 1992 to early 2021. It facilitated the establishment of blood banks, promoted voluntary blood donation, and built infrastructure for safe blood processing and storage. Blood center staff received training to implement stringent safety standards, while voluntary blood donation campaigns were actively promoted.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "In early 2021, the responsibility for BTS transitioned from NACO to the Directorate General of Health Services (Dte.GHS) under the Ministry of Health and Family Welfare (MoHFW). Blood Transfusion Services, also supports 1131 Blood banks in the Public and Charitable sector in respect of manpower, tyraining, procurement of Blood Bags and testing kits, conducting Voluntary Blood Donation (VBD) camps and Information Education Communication (IEC) activities etc. In addition, Mobile vans for Blood collection and blood transportation vans are provided to the States/UTs",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "Today, 4,263 licensed blood centers operate across India, encompassing the government, NGO/charitable, and private sectors. This centralized platform streamlines blood center management and donor engagement, encourages blood bank registration, and provides online blood donation certificates. It enhances the tracking and availability of blood across the country.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "Conducted from September 17 to October 1, 2022, as a mega voluntary blood donation drive. Achievements include 11,868 approved blood donation camps, 419,642 donors registered, 271,574 units of blood collected, and a record single-day blood collection of over 1.68 lakh units on September 17, 2022.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "Observed on June 14, 2022, with the theme: “Donating blood is an act of solidarity. Join the efforts and save lives.” Activities included free blood group testing camps and a nationwide campaign that trended #1 on Twitter. In 2024, the theme celebrated “20 years of giving: Thank you, blood donors,” with a national webinar engaging over 200 participants.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "Hosted in Jaipur, featuring a Pan-India NGO Conclave with 120+ participating organizations. Blood-for-Life e-newsletter launched in August 2024 to promote voluntary blood donation and share updates. Released in July 2022 to enhance operational consistency. Published in August 2023, providing updated guidelines for blood transfusion practices.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "Revised charges for blood and blood products were issued for nationwide compliance on June 14, 2022. Operational Guidelines for External Quality Assurance Scheme (EQAS) was developed (First Edition 2024). Standardized for immunohematology and transfusion-transmitted infections (TTI), supported by three proficiency testing providers and promoting blood center enrollment under NBTC",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "Strengthened regulations for blood centers, including updated nomenclature to Blood Centres, mandatory blood donation counseling, and inclusion of new diagnostic technologies for blood screening.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "Training of Trainers (ToT) programs equipped medical officers (MOs), counselors, and lab technicians with advanced skills. Developed technical manuals for medical officers, nurses, and lab technicians, around 200 (MOs), LTs, and Counselors were trained in 2024-25 at the National level. Developed blood donor counseling modules in 2016 to improve the donor experience.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "for early detection and management of Hepatitis B and C in blood donors. Conducted a scientific exercise estimating blood demand and supply, published in an international journal. Formulated the National Plasma Policy in 2014 to ensure optimal plasma utilization. Enhanced the operational capacity of SBTCs across States and UTs. Expanded CSUs to ensure optimal utilization of donated blood for diverse clinical needs.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "DGHS: Blood Transfusion Services / NBTC (MoHFW)",
+   "source_url": "https://dghs.mohfw.gov.in/bts.php",
+   "text": "Integrating modern technology, effective governance, and public engagement has significantly transformed India's BTS. Today, it stands as a testament to the country's commitment to saving lives through a well-coordinated, safe, and efficient blood transfusion service.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "Blood bank, Dr. Baba Saheb Ambedkar Hospital (Govt. of NCT of Delhi)",
+   "source_url": "https://bsah.delhi.gov.in/bsah/blood-donation",
+   "text": "Blood and component are issued after blood grouping and cross matching for compatibility testing using gel card technology. Facilities are available 24 X 7 days. Blood and components are issued to patients admitted in our hospital as well as in other govt. hospitals after blood requisition is received from the treating clinician.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "Blood bank, Dr. Baba Saheb Ambedkar Hospital (Govt. of NCT of Delhi)",
+   "source_url": "https://bsah.delhi.gov.in/bsah/blood-donation",
+   "text": "Blood is issued against replacement donation at our blood bank. In case, donor is not available, blood is issued against life saving request form from the clinician which has to be counter signed and stemped by unit Incharge/HOD during working hours and CMO after working hours.",
+   "fetched_via": "direct_https"
+  },
+  {
+   "source_title": "Blood bank, Dr. Baba Saheb Ambedkar Hospital (Govt. of NCT of Delhi)",
+   "source_url": "https://bsah.delhi.gov.in/bsah/blood-donation",
+   "text": "Replacement and voluntary donor cards are issued after blood donation as the case may be. Validity of the replacement card is for 6 months for the same patient for whom replacement donation has been done. Validity of voluntary card is for 1 year for close blood relation and this card is valid in all blood bank under Govt. of NCT of Delhi.",
+   "fetched_via": "direct_https"
+  }
+ ]
+}
