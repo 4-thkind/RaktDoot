@@ -2,11 +2,31 @@
 
 import { useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
-import { api, type Config } from "@/lib/api";
+import { API_BASE, api, type Config } from "@/lib/api";
 import { GROUPS, formatPhone, show } from "@/lib/blood";
 
 type ChatRow = { phone: string; name: string | null; group: string | null; location: string | null; last: string | null; last_at: string | null; last_direction: string | null };
-type Msg = { id: number; direction: "in" | "out"; kind: string; body: string; options: { id: string; title: string }[] | null; location: { lat: number; lng: number; name?: string } | null; at: string };
+type Msg = { id: number; direction: "in" | "out"; kind: string; body: string; options: { id: string; title: string }[] | null; location: { lat: number; lng: number; name?: string } | null; at: string;
+  media?: "audio" | "image" | null; transcript?: string | null; stt?: string | null; audio?: string | null; tts?: string | null; sms_from?: string | null };
+type Inbound = { text?: string; button_id?: string; lat?: number; lng?: number; media_kind?: "audio" | "image"; media_base64?: string; media_mime?: string; media_sample?: string };
+
+const SAMPLES: [string, Inbound][] = [
+  ["Voice note: request (Hinglish)", { media_kind: "audio", media_sample: "voice_request.mp3" }],
+  ["Voice note: request (Hindi)", { media_kind: "audio", media_sample: "voice_request_hi.mp3" }],
+  ["Voice note: \"हाँ, बीस मिनट में\"", { media_kind: "audio", media_sample: "voice_accept.mp3" }],
+  ["Photo: donor card", { media_kind: "image", media_sample: "donor_card.jpg" }],
+  ["Forwarded plea (fresh)", { text: `URGENT!! B+ve blood needed for my father at Safdarjung Hospital, 2 units, ward 12. Contact Rahul 98765 12345. Date: ${new Date().toLocaleDateString("en-GB")}. Please forward` }],
+  ["Forwarded plea (scam)", { text: "O-ve blood needed at AIIMS urgently, send Rs 2000 transport charges on UPI 98765 00000 first" }],
+];
+
+function toBase64(file: File): Promise<string> {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(String(r.result).split(",")[1] ?? "");
+    r.onerror = () => rej(r.error);
+    r.readAsDataURL(file);
+  });
+}
 type Chat = { phone: string; donor: { name: string; group: string; language: string; location: string | null; last_donation_date: string | null; opted_out: boolean } | null; messages: Msg[] };
 
 const PLACES: [string, number, number][] = [
@@ -71,7 +91,14 @@ function Simulator() {
     end.current?.scrollIntoView({ block: "end" });
   }, [chat?.messages.length]);
 
-  async function send(body: { text?: string; button_id?: string; lat?: number; lng?: number }) {
+  async function sendFile(file: File | undefined) {
+    if (!file) return;
+    const kind = file.type.startsWith("audio") ? "audio" : file.type.startsWith("image") ? "image" : null;
+    if (!kind) return setError("Send an audio file or a photo.");
+    send({ media_kind: kind, media_base64: await toBase64(file), media_mime: file.type });
+  }
+
+  async function send(body: Inbound) {
     if (!phone) return;
     try {
       setChat(await api<Chat>("/api/mock/inbound", { method: "POST", body: JSON.stringify({ phone, ...body }) }));
@@ -146,7 +173,20 @@ function Simulator() {
                   <div key={m.id} className={`bubble ${m.direction}`}>
                     {m.location ? (
                       <a href={`https://maps.google.com/?q=${m.location.lat},${m.location.lng}`} target="_blank" rel="noreferrer">Location: {m.location.name || m.body}</a>
-                    ) : m.body}
+                    ) : m.media === "audio" ? (
+                      <>
+                        <span className="tiny muted">Voice note{m.stt ? ` · transcribed by ${m.stt}` : ""}</span>
+                        <br /><i>{m.transcript ? `“${m.transcript}”` : "(could not transcribe)"}</i>
+                      </>
+                    ) : m.media === "image" ? <span className="tiny muted">Photo (read, then discarded)</span>
+                      : m.kind === "audio" && m.audio ? (
+                        <>
+                          <span className="tiny muted">Voice reply{m.tts ? ` · ${m.tts} TTS` : ""}</span>
+                          <audio controls preload="none" src={`${API_BASE}${m.audio}`} style={{ display: "block", maxWidth: 260, marginTop: 4 }} />
+                        </>
+                      ) : m.kind === "sms" ? (
+                        <><span className="tiny" style={{ color: "var(--ochre)", fontWeight: 600 }}>SMS from {m.sms_from} (demo)</span><br />{m.body}</>
+                      ) : m.body}
                     <time className="num">{new Date(m.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</time>
                     {m.direction === "out" && m.options && (
                       <div className="opts">
@@ -168,6 +208,17 @@ function Simulator() {
                 <input className="input" value={text} onChange={(e) => setText(e.target.value)} placeholder="Type a reply, e.g. haan 20 min mein" />
                 <button className="btn btn-primary btn-sm" type="submit">Send</button>
               </form>
+              <div className="sim-compose" style={{ borderTop: 0, paddingTop: 0, flexWrap: "wrap" }}>
+                <label className="btn btn-quiet btn-sm" style={{ cursor: "pointer" }}>
+                  Voice note / photo
+                  <input type="file" accept="audio/*,image/*" hidden onChange={(e) => { sendFile(e.target.files?.[0]); e.target.value = ""; }} />
+                </label>
+                <select className="input" style={{ minHeight: 40, flex: 1 }} aria-label="Send a sample" value=""
+                  onChange={(e) => { const s = SAMPLES[Number(e.target.value)]; if (s) send(s[1]); }}>
+                  <option value="">Send a sample…</option>
+                  {SAMPLES.map(([n], i) => <option key={n} value={i}>{n}</option>)}
+                </select>
+              </div>
             </>
           ) : (
             <div className="sim-msgs" style={{ justifyContent: "center", alignItems: "center" }}>

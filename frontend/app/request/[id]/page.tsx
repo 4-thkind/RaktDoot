@@ -2,10 +2,42 @@
 
 import { useParams, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+import { GuidePanel } from "@/components/GuidePanel";
 import { DispatchPlate } from "@/components/ProximityPlate";
 import { API_BASE, api, type Snapshot } from "@/lib/api";
 import { formatPhone, mapLink, show, telLink, waLink } from "@/lib/blood";
-import { useAgo, useLang } from "@/lib/i18n";
+import { useAgo, useLang, type Key } from "@/lib/i18n";
+
+function HospitalCheckLine({ snap }: { snap: Snapshot }) {
+  const { t } = useLang();
+  const c = snap.hospital.check || {};
+  const ev = c.evidence?.[0];
+  if (snap.hospital.verified === true && ev) {
+    const label = t("hosp_verified", { source: ev.source });
+    return <p className="small" style={{ margin: "6px 0 0", color: "var(--green)" }}>{ev.url ? <a href={ev.url} target="_blank" rel="noreferrer" style={{ color: "inherit" }}>{label}</a> : label}</p>;
+  }
+  if (snap.hospital.verified === false) return <p className="small" style={{ margin: "6px 0 0", color: "var(--ochre)" }}>{t("hosp_unverified")}</p>;
+  return <p className="tiny muted" style={{ margin: "6px 0 0" }}>{t("hosp_unchecked")}</p>;
+}
+
+function MissionLog({ snap }: { snap: Snapshot }) {
+  const { t } = useLang();
+  if (!snap.decisions?.length) return null;
+  return (
+    <section style={{ marginTop: 28 }}>
+      <h2 className="h2">{t("mission_title")}</h2>
+      <ul className="log" style={{ marginTop: 10 }} aria-live="polite">
+        {snap.decisions.map((d, i) => (
+          <li key={`${d.at}-${i}`} className={i === 0 ? "now" : undefined}>
+            <span className="num tiny">{new Date(d.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>{" "}
+            {d.reason}
+            <span className="tiny"> · {d.result} · <span className="badge">{t(`engine_${d.engine}` as Key)}</span></span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
 
 export default function Page() {
   return (
@@ -117,8 +149,10 @@ function Dashboard() {
     <div className="narrow">
       <div className="status-head">
         <p className="kicker" style={{ margin: 0 }}>
-          {show(snap.patient_group)}, {snap.units} unit{snap.units > 1 ? "s" : ""}, {snap.hospital.name}
+          {snap.kind !== "emergency" && <span className="badge on" style={{ marginRight: 8 }}>{t(snap.kind === "drive" ? "kind_drive" : "kind_recurring")}</span>}
+          {show(snap.patient_group)} {t(`comp_${snap.component}` as Key).toLowerCase()}, {snap.units} unit{snap.units > 1 ? "s" : ""}, {snap.hospital.name}
         </p>
+        <HospitalCheckLine snap={snap} />
         <h1 className="h1" style={{ marginTop: 6 }} aria-live="polite">{t(`st_${snap.status}` as "st_open")}</h1>
         {open && <p className="muted" style={{ margin: "6px 0 0" }}>{t("connected_of", { n: connected, target: snap.target })}</p>}
         {firstDonor && <p className="small muted" style={{ margin: "4px 0 0" }}>{t("first_donor", { t: firstDonor })}</p>}
@@ -172,6 +206,8 @@ function Dashboard() {
         )}
       </section>
 
+      <MissionLog snap={snap} />
+
       {snap.wave > 0 && (
         <section style={{ marginTop: 32 }}>
           <h2 className="h2">{t("rings_title")}</h2>
@@ -201,6 +237,8 @@ function Dashboard() {
         </p>
         {open && <p className="tiny muted" style={{ margin: 0 }}>{t("keep_page")}</p>}
       </section>
+
+      <div style={{ marginTop: 32 }}><GuidePanel /></div>
     </div>
   );
 }

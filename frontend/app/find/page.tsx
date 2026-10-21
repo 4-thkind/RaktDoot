@@ -3,9 +3,16 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { StockPlate } from "@/components/ProximityPlate";
-import { API_BASE, api, type Bank, type Group, type Place, type StockResult } from "@/lib/api";
+import { ScanSlip } from "@/components/ScanSlip";
+import { VoiceRequest } from "@/components/VoiceRequest";
+import { API_BASE, api, type Bank, type Component, type Group, type Place, type SlipFields, type StockResult } from "@/lib/api";
 import { GROUPS, RECEIVES_FROM, mapLink, show } from "@/lib/blood";
-import { useAgo, useLang } from "@/lib/i18n";
+import { useAgo, useLang, type Key } from "@/lib/i18n";
+
+const COMPONENTS: Component[] = ["prbc", "platelets", "plasma", "whole_blood"];
+const COMPONENT_LABEL: Record<Component, string> = {
+  prbc: "Packed Red Blood Cells", platelets: "Random Donor Platelets", plasma: "Fresh Frozen Plasma", whole_blood: "Whole Blood",
+};
 
 type Step = 1 | 2 | 3 | 4 | 5;
 type Origin = { lat: number; lng: number; label: string };
@@ -18,6 +25,8 @@ export default function FindBlood() {
   const [step, setStep] = useState<Step>(1);
   const [group, setGroup] = useState<Group | null>(null);
   const [groupConfirmed, setGroupConfirmed] = useState(true);
+  const [component, setComponent] = useState<Component>("prbc");
+  const [hospitalHint, setHospitalHint] = useState("");
   const [origin, setOrigin] = useState<Origin | null>(null);
   const [hospital, setHospital] = useState<Place | null>(null);
 
@@ -60,7 +69,7 @@ export default function FindBlood() {
         body: JSON.stringify({
           patient_group: group, group_confirmed: groupConfirmed, units, patient_age: Number(age), patient_gender: gender,
           hospital_name: hospital.name, hospital_address: hospital.address, hospital_lat: hospital.lat, hospital_lng: hospital.lng,
-          requester_name: name.trim(), requester_phone: phone, language: lang,
+          requester_name: name.trim(), requester_phone: phone, language: lang, component,
         }),
       });
       await api(`/api/requests/${created.id}/dispatch?t=${encodeURIComponent(created.manage_token)}`, { method: "POST" });
@@ -87,9 +96,19 @@ export default function FindBlood() {
       {step === 1 && (
         <GroupStep
           selected={group}
+          component={component}
+          onComponent={setComponent}
           onPick={(g, confirmed) => {
             setGroup(g);
             setGroupConfirmed(confirmed);
+            go(origin ? 3 : 2);
+          }}
+          onScan={(f: SlipFields) => {
+            if (f.patient_group) setGroup(f.patient_group);
+            if (f.component) setComponent(f.component);
+            if (f.units) setUnits(f.units);
+            if (f.hospital) setHospitalHint(f.hospital);
+            setGroupConfirmed(true);
             go(origin ? 3 : 2);
           }}
         />
@@ -97,6 +116,7 @@ export default function FindBlood() {
 
       {step === 2 && (
         <WhereStep
+          hint={hospitalHint}
           onPick={(o, place) => {
             setOrigin(o);
             if (place) setHospital(place);
@@ -106,7 +126,7 @@ export default function FindBlood() {
       )}
 
       {step === 3 && group && origin && (
-        <StockStep group={group} origin={origin} onAskDonors={() => go(4)} />
+        <StockStep group={group} component={component} origin={origin} onAskDonors={() => go(4)} />
       )}
 
       {step === 4 && origin && (
@@ -164,7 +184,8 @@ export default function FindBlood() {
             {[
               "URGENT BLOOD REQUEST (Rakt Doot)",
               `Patient needs: ${show(group)} (${units} unit${units > 1 ? "s" : ""})${groupConfirmed ? "" : " - group not yet confirmed"}`,
-              `Can receive from: ${RECEIVES_FROM[group].map(show).join(", ")}`,
+              `Component: ${COMPONENT_LABEL[component]}`,
+              ...(component === "prbc" || component === "whole_blood" ? [`Can receive from: ${RECEIVES_FROM[group].map(show).join(", ")}`] : []),
               `Patient: ${age}, ${gender === "M" ? "Male" : gender === "F" ? "Female" : "Other"}`,
               `Hospital: ${hospital.name}`,
               "Distance from you: shown to each donor",
@@ -188,11 +209,32 @@ export default function FindBlood() {
 }
 
 /* ------------------------------------------------------------------ step 1 */
-function GroupStep({ selected, onPick }: { selected: Group | null; onPick: (g: Group, confirmed: boolean) => void }) {
+function GroupStep({ selected, component, onComponent, onPick, onScan }: {
+  selected: Group | null; component: Component; onComponent: (c: Component) => void;
+  onPick: (g: Group, confirmed: boolean) => void; onScan: (f: SlipFields) => void;
+}) {
   const { t } = useLang();
   const [unsure, setUnsure] = useState(false);
+  const [helper, setHelper] = useState<"" | "voice" | "scan">("");
   return (
     <section>
+      <div className="row" style={{ marginBottom: 12 }}>
+        <button className="btn btn-secondary btn-sm" aria-pressed={helper === "voice"} onClick={() => setHelper(helper === "voice" ? "" : "voice")}>{t("voice_btn")}</button>
+        <button className="linkbtn small" onClick={() => setHelper(helper === "scan" ? "" : "scan")}>{t("scan_slip")}</button>
+      </div>
+      <div style={{ marginBottom: 18 }}>
+        {helper === "voice" && <VoiceRequest onUse={onScan} />}
+        {helper === "scan" && <ScanSlip onUse={onScan} />}
+      </div>
+      <div className="field" style={{ marginBottom: 22 }}>
+        <span className="label" id="comp-l">{t("component_q")}</span>
+        <div className="seg" role="group" aria-labelledby="comp-l" style={{ gridAutoFlow: "row", gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))" }}>
+          {COMPONENTS.map((c) => (
+            <button key={c} type="button" aria-pressed={component === c} onClick={() => onComponent(c)}>{t(`comp_${c}` as Key)}</button>
+          ))}
+        </div>
+        <span className="help">{t("comp_help")}{component === "platelets" || component === "plasma" ? ` ${t("comp_apheresis")}` : ""}</span>
+      </div>
       <h1 className="h1">{t("q_group")}</h1>
       <div className="groups" role="group" aria-label={t("q_group")}>
         {GROUPS.map((g) => (
@@ -214,8 +256,8 @@ function GroupStep({ selected, onPick }: { selected: Group | null; onPick: (g: G
 }
 
 /* ------------------------------------------------------------------ step 2 */
-function usePlaceSearch(origin?: Origin | null) {
-  const [q, setQ] = useState("");
+function usePlaceSearch(origin?: Origin | null, initial = "") {
+  const [q, setQ] = useState(initial);
   const [results, setResults] = useState<Place[] | null>(null);
   const [busy, setBusy] = useState(false);
   useEffect(() => {
@@ -245,11 +287,11 @@ function usePlaceSearch(origin?: Origin | null) {
   return { q, setQ, results, busy };
 }
 
-function WhereStep({ onPick }: { onPick: (o: Origin, place?: Place) => void }) {
+function WhereStep({ onPick, hint = "" }: { onPick: (o: Origin, place?: Place) => void; hint?: string }) {
   const { t } = useLang();
   const [locating, setLocating] = useState(false);
   const [denied, setDenied] = useState(false);
-  const { q, setQ, results, busy } = usePlaceSearch();
+  const { q, setQ, results, busy } = usePlaceSearch(null, hint);
 
   function locate() {
     if (!("geolocation" in navigator)) {
@@ -300,7 +342,20 @@ function WhereStep({ onPick }: { onPick: (o: Origin, place?: Place) => void }) {
 }
 
 /* ------------------------------------------------------------------ step 3 */
-function StockStep({ group, origin, onAskDonors }: { group: Group; origin: Origin; onAskDonors: () => void }) {
+function TinyFishBadge({ result }: { result: StockResult }) {
+  const { t } = useLang();
+  const s = result.duration_s ?? null;
+  let text = "";
+  if (result.sample) text = t("tf_sample");
+  else if (result.served_by === "agent") text = t("tf_agent", { s: s ?? "?" });
+  else if (result.served_by === "replay") text = t("tf_replay", { s: s ?? "?" });
+  else if (result.served_by === "cache") text = t("tf_cache");
+  if (!text) return null;
+  const run = result.run_id && !result.sample ? ` · ${t("tf_run", { id: result.run_id.slice(0, 10) })}` : "";
+  return <p className="badge" style={{ margin: 0 }} aria-label="Data source">{text}{run}{result.steps ? ` · ${result.steps} steps` : ""}</p>;
+}
+
+function StockStep({ group, component, origin, onAskDonors }: { group: Group; component: Component; origin: Origin; onAskDonors: () => void }) {
   const { t, lang } = useLang();
   const ago = useAgo();
   const [log, setLog] = useState<string[]>([]);
@@ -311,7 +366,7 @@ function StockStep({ group, origin, onAskDonors }: { group: Group; origin: Origi
   useEffect(() => {
     setLog([t("checking")]);
     setResult(null);
-    const url = `${API_BASE}/api/stock/stream?lat=${origin.lat}&lng=${origin.lng}&group=${encodeURIComponent(group)}`;
+    const url = `${API_BASE}/api/stock/stream?lat=${origin.lat}&lng=${origin.lng}&group=${encodeURIComponent(group)}&component=${component}`;
     const es = new EventSource(url);
     let finished = false;
     es.addEventListener("progress", (ev) => {
@@ -337,7 +392,7 @@ function StockStep({ group, origin, onAskDonors }: { group: Group; origin: Origi
       clearInterval(timer);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [group, origin.lat, origin.lng]);
+  }, [group, component, origin.lat, origin.lng]);
 
   const place = origin.label === "you" ? (lang === "hi" ? "आप" : "you") : origin.label;
   const banks = result?.banks ?? [];
@@ -352,7 +407,9 @@ function StockStep({ group, origin, onAskDonors }: { group: Group; origin: Origi
   return (
     <section className="stack" style={{ ["--gap" as string]: "18px" }}>
       <h1 className="h1">{t("q_stock", { place })}</h1>
-      <p className="muted" style={{ margin: "8px 0 0" }}>{t("stock_for", { group: show(group) })}</p>
+      <p className="muted" style={{ margin: "8px 0 0" }}>
+        {t("stock_for", { group: show(group) })}. {t("component_line", { c: t(`comp_${component}` as Key) })}
+      </p>
 
       {!result && (
         <div className="sheet" aria-live="polite">
@@ -368,6 +425,7 @@ function StockStep({ group, origin, onAskDonors }: { group: Group; origin: Origi
 
       {result && (
         <>
+          <TinyFishBadge result={result} />
           {result.sample && <p className="note">{t("sample_note")}</p>}
           {result.source === "stale_cache" && <p className="note">{t("stale_note", { reason: result.reason ?? "" })}</p>}
           {result.source === "unavailable" && <p className="note">{t("unavailable_note", { reason: result.reason ?? "" })}</p>}
