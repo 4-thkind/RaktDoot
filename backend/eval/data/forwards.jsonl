@@ -1,0 +1,35 @@
+{"text": "URGENT!! B+ve blood needed for my father at Safdarjung Hospital, 2 units, ward 12. Contact Rahul 98765 12345. Date: {today}", "label": "looks_genuine"}
+{"text": "Urgent requirement of O negative blood at AIIMS New Delhi for a road accident patient. 3 units. Call 98110 22334. {today}", "label": "looks_genuine"}
+{"text": "A+ platelets needed at Sir Ganga Ram Hospital today for dengue patient. Contact 99999 88776", "label": "looks_genuine"}
+{"text": "Need AB+ blood 2 units at Max Super Speciality Hospital Saket, patient in ICU. Please call 98100 55667 ({today})", "label": "looks_genuine"}
+{"text": "Blood required: B negative, 1 unit, Lok Nayak Hospital, contact 97170 11223, date {today}", "label": "looks_genuine"}
+{"text": "O+ve blood needed at Fortis Hospital Noida for surgery tomorrow, 2 units. Attendant: 98990 34567. {today}", "label": "looks_genuine"}
+{"text": "Mere bhai ko A+ blood chahiye RML hospital mein, 2 unit. Call karo 98912 34567. Aaj ({today})", "label": "looks_genuine"}
+{"text": "Urgent: AB- plasma needed at Indraprastha Apollo Hospital. Contact 99110 77889. {today}", "label": "looks_genuine"}
+{"text": "Need O+ blood donors at Batra Hospital, 3 units, contact 98710 44556, {today}", "label": "looks_genuine"}
+{"text": "B+ blood needed urgently at Holy Family Hospital Okhla, call 98111 99887 today", "label": "looks_genuine"}
+{"text": "URGENT B+ve blood needed at Safdarjung Hospital, 2 units. Contact 98765 43219. Date: {days_ago_9}", "label": "likely_stale"}
+{"text": "O negative blood required at AIIMS trauma centre. Call 98100 11122. Dated {days_ago_20}", "label": "likely_stale"}
+{"text": "A+ blood needed for thalassemia child at Ganga Ram hospital, contact 98999 00011, {days_ago_45}", "label": "likely_stale"}
+{"text": "Plz help!! AB+ blood needed Max Saket 2 units, call 98111 22233 date {days_ago_6}", "label": "likely_stale"}
+{"text": "B- blood urgently required at RML Hospital. Contact 99101 23456. Posted on {days_ago_14}", "label": "likely_stale"}
+{"text": "O+ blood needed at Fortis Gurgaon for heart surgery, 4 units. 98180 98180. {days_ago_30}", "label": "likely_stale"}
+{"text": "Need A- blood at Lok Nayak Hospital, 2 units, contact 98990 12121, {days_ago_11}", "label": "likely_stale"}
+{"text": "Urgent need of B+ platelets at Medanta, call 99880 11223 on {days_ago_8}", "label": "likely_stale"}
+{"text": "O- blood needed at AIIMS urgently, please send Rs 2000 transport charges on UPI 98765 00000 first", "label": "possible_scam"}
+{"text": "B+ blood available, pay 1500 rupees processing fee via Google Pay to 99999 12345 and we will deliver", "label": "possible_scam"}
+{"text": "Donor ready for A+ blood. Send advance payment on PhonePe 98111 00000 for travel. Hospital: Safdarjung", "label": "possible_scam"}
+{"text": "AB- blood needed at Max hospital. Kindly transfer Rs 3000 to account number 1234567890 IFSC SBIN0001234 for arrangement", "label": "possible_scam"}
+{"text": "Urgent O+ blood at Apollo. Donor needs Rs 500 cash for petrol, call 98100 99999", "label": "possible_scam"}
+{"text": "B- blood donor available near AIIMS, pay registration fees of Rs 999 on Paytm 99887 66554", "label": "possible_scam"}
+{"text": "Plasma needed at Ganga Ram hospital, please send money for transport charges, UPI 98765 11111", "label": "possible_scam"}
+{"text": "A+ blood needed, paise bhej do GPay 98111 22222 pe, donor ready hai, Safdarjung", "label": "possible_scam"}
+{"text": "B+ blood needed urgently, please share widely, contact 98765 99988", "label": "unverified"}
+{"text": "O+ blood required at City Life Care Nursing Home Xyz, contact 98111 33344, {today}", "label": "unverified"}
+{"text": "Need A- blood urgently for my mother. Please forward to all groups!!", "label": "unverified"}
+{"text": "AB+ blood needed at Shree Balaji Clinic Pqr, 2 units, call 99881 22334", "label": "unverified"}
+{"text": "Urgent!!! B- blood needed. Patient critical. Forward to everyone. Contact 98911 77665", "label": "unverified"}
+{"text": "O- blood needed at Sunrise Nursing Home Abc for delivery, contact 98700 11223 {today}", "label": "unverified"}
+{"text": "A+ blood required at Galaxy Healthcare Imaginaryville, 2 units, 98112 34560", "label": "unverified"}
+{"text": "Blood needed B+ at hospital, urgent, 3 units, contact 99112 23344", "label": "unverified"}
+{"text": "B+ blood needed at Max Super Speciality Hospital, Saket. Contact 98765 43210. {today}", "label": "likely_fulfilled", "setup": "fulfilled_request"}

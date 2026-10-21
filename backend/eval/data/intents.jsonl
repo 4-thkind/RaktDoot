@@ -1,0 +1,201 @@
+{"text": "yes I can come", "intent": "accept", "lang": "en"}
+{"text": "Yes, on my way", "intent": "accept", "lang": "en"}
+{"text": "sure, I'll be there in 30 minutes", "intent": "accept", "lang": "en", "eta": 30}
+{"text": "ok coming", "intent": "accept", "lang": "en"}
+{"text": "I can donate today", "intent": "accept", "lang": "en"}
+{"text": "Count me in, leaving now", "intent": "accept", "lang": "en"}
+{"text": "yes, reaching in 15 mins", "intent": "accept", "lang": "en", "eta": 15}
+{"text": "okay I will go", "intent": "accept", "lang": "en"}
+{"text": "Ready to donate", "intent": "accept", "lang": "en"}
+{"text": "yeah I'm free, will come", "intent": "accept", "lang": "en"}
+{"text": "sure", "intent": "accept", "lang": "en"}
+{"text": "I'll come after office, around 40 minutes", "intent": "accept", "lang": "en", "eta": 40}
+{"text": "yes please share the address", "intent": "accept", "lang": "en"}
+{"text": "I am coming", "intent": "accept", "lang": "en"}
+{"text": "Happy to help, coming", "intent": "accept", "lang": "en"}
+{"text": "haan aa raha hun", "intent": "accept", "lang": "hinglish"}
+{"text": "haan main aa jaunga 20 min mein", "intent": "accept", "lang": "hinglish", "eta": 20}
+{"text": "ji bilkul, aa rahi hoon", "intent": "accept", "lang": "hinglish"}
+{"text": "theek hai aata hu", "intent": "accept", "lang": "hinglish"}
+{"text": "haan bhai nikal raha hu", "intent": "accept", "lang": "hinglish"}
+{"text": "ha aa sakta hu", "intent": "accept", "lang": "hinglish"}
+{"text": "ok bhaiya aata hoon 30 minute", "intent": "accept", "lang": "hinglish", "eta": 30}
+{"text": "haan ji, de dunga blood", "intent": "accept", "lang": "hinglish"}
+{"text": "bilkul, kahan aana hai", "intent": "accept", "lang": "hinglish"}
+{"text": "aa rahi hu 10 min me", "intent": "accept", "lang": "hinglish", "eta": 10}
+{"text": "haan pakka aaunga", "intent": "accept", "lang": "hinglish"}
+{"text": "thik hai main tayyar hu", "intent": "accept", "lang": "hinglish"}
+{"text": "haan, abhi nikal rahi hoon", "intent": "accept", "lang": "hinglish"}
+{"text": "ji haan main donate karunga", "intent": "accept", "lang": "hinglish"}
+{"text": "haan 45 minute lagenge", "intent": "accept", "lang": "hinglish", "eta": 45}
+{"text": "हाँ मैं आ रहा हूँ", "intent": "accept", "lang": "hi"}
+{"text": "हां, 20 मिनट में पहुंचूंगा", "intent": "accept", "lang": "hi", "eta": 20}
+{"text": "जी, आ रही हूँ", "intent": "accept", "lang": "hi"}
+{"text": "हाँ मैं रक्तदान करूंगा", "intent": "accept", "lang": "hi"}
+{"text": "हाँ जी आऊंगा", "intent": "accept", "lang": "hi"}
+{"text": "ठीक है, मैं आता हूँ", "intent": "accept", "lang": "hi"}
+{"text": "हां बिल्कुल", "intent": "accept", "lang": "hi"}
+{"text": "जी हाँ, अभी निकल रहा हूँ", "intent": "accept", "lang": "hi"}
+{"text": "हाँ 30 मिनट", "intent": "accept", "lang": "hi", "eta": 30}
+{"text": "मैं तैयार हूँ, आ रहा हूँ", "intent": "accept", "lang": "hi"}
+{"text": "no sorry", "intent": "decline", "lang": "en"}
+{"text": "Not today, I'm travelling", "intent": "decline", "lang": "en"}
+{"text": "can't make it, sorry", "intent": "decline", "lang": "en"}
+{"text": "I'm busy at work", "intent": "decline", "lang": "en"}
+{"text": "Sorry I am unwell", "intent": "decline", "lang": "en"}
+{"text": "no I cannot", "intent": "decline", "lang": "en"}
+{"text": "not possible today", "intent": "decline", "lang": "en"}
+{"text": "I'm out of town this week, sorry", "intent": "decline", "lang": "en"}
+{"text": "nope", "intent": "decline", "lang": "en"}
+{"text": "Can't, exams tomorrow", "intent": "decline", "lang": "en"}
+{"text": "sorry no", "intent": "decline", "lang": "en"}
+{"text": "I won't be able to come", "intent": "decline", "lang": "en"}
+{"text": "aaj nahi ho payega", "intent": "decline", "lang": "hinglish"}
+{"text": "nahi bhai aaj busy hu", "intent": "decline", "lang": "hinglish"}
+{"text": "sorry nahi aa sakta", "intent": "decline", "lang": "hinglish"}
+{"text": "abhi nahi, office mein hu", "intent": "decline", "lang": "hinglish"}
+{"text": "nai yaar, bahar hu", "intent": "decline", "lang": "hinglish"}
+{"text": "nahi ho paayega aaj", "intent": "decline", "lang": "hinglish"}
+{"text": "aaj mushkil hai, sorry", "intent": "decline", "lang": "hinglish"}
+{"text": "main shehar se bahar hoon, nahi aa paunga", "intent": "decline", "lang": "hinglish"}
+{"text": "na, tabiyat theek nahi", "intent": "decline", "lang": "hinglish"}
+{"text": "nahin", "intent": "decline", "lang": "hinglish"}
+{"text": "kal dekhte hai, aaj nahi", "intent": "decline", "lang": "hinglish"}
+{"text": "nahi", "intent": "decline", "lang": "hinglish"}
+{"text": "आज नहीं हो पाएगा", "intent": "decline", "lang": "hi"}
+{"text": "नहीं, माफ़ कीजिए", "intent": "decline", "lang": "hi"}
+{"text": "मैं बाहर हूँ, नहीं आ सकता", "intent": "decline", "lang": "hi"}
+{"text": "आज व्यस्त हूँ", "intent": "decline", "lang": "hi"}
+{"text": "नही", "intent": "decline", "lang": "hi"}
+{"text": "तबीयत ठीक नहीं है, नहीं आ पाऊंगा", "intent": "decline", "lang": "hi"}
+{"text": "अभी नहीं", "intent": "decline", "lang": "hi"}
+{"text": "नहीं जी", "intent": "decline", "lang": "hi"}
+{"text": "sorry, not this time", "intent": "decline", "lang": "en"}
+{"text": "I donated last month so can't", "intent": "decline", "lang": "en"}
+{"text": "will reach in 20 minutes", "intent": "eta_update", "lang": "en", "eta": 20, "context": "connected"}
+{"text": "10 minutes away", "intent": "eta_update", "lang": "en", "eta": 10, "context": "connected"}
+{"text": "stuck in traffic, 25 min more", "intent": "eta_update", "lang": "en", "eta": 25, "context": "connected"}
+{"text": "reaching in 5 mins", "intent": "eta_update", "lang": "en", "eta": 5, "context": "connected"}
+{"text": "about 40 minutes", "intent": "eta_update", "lang": "en", "eta": 40, "context": "connected"}
+{"text": "15 min mein pahunch jaunga", "intent": "eta_update", "lang": "hinglish", "eta": 15, "context": "connected"}
+{"text": "traffic hai, 30 min lagega", "intent": "eta_update", "lang": "hinglish", "eta": 30, "context": "connected"}
+{"text": "bas 10 minute", "intent": "eta_update", "lang": "hinglish", "eta": 10, "context": "connected"}
+{"text": "20 minute aur", "intent": "eta_update", "lang": "hinglish", "eta": 20, "context": "connected"}
+{"text": "metro mein hu, 35 min", "intent": "eta_update", "lang": "hinglish", "eta": 35, "context": "connected"}
+{"text": "15 मिनट में पहुंच जाऊंगा", "intent": "eta_update", "lang": "hi", "eta": 15, "context": "connected"}
+{"text": "25 मिनट लगेंगे", "intent": "eta_update", "lang": "hi", "eta": 25, "context": "connected"}
+{"text": "बस 5 मिनट", "intent": "eta_update", "lang": "hi", "eta": 5, "context": "connected"}
+{"text": "about 50 min, coming from Noida", "intent": "eta_update", "lang": "en", "eta": 50, "context": "connected"}
+{"text": "12 mins", "intent": "eta_update", "lang": "en", "eta": 12, "context": "connected"}
+{"text": "I'm in Noida this week", "intent": "location_update", "lang": "en", "location": "Noida"}
+{"text": "I am in Gurgaon now", "intent": "location_update", "lang": "en", "location": "Gurgaon"}
+{"text": "I'm at Dwarka these days", "intent": "location_update", "lang": "en", "location": "Dwarka"}
+{"text": "I moved to Faridabad", "intent": "location_update", "lang": "en", "location": "Faridabad"}
+{"text": "I am in Saket till Sunday", "intent": "location_update", "lang": "en", "location": "Saket"}
+{"text": "main noida mein hoon", "intent": "location_update", "lang": "hinglish", "location": "Noida"}
+{"text": "mai ghaziabad me hu aajkal", "intent": "location_update", "lang": "hinglish", "location": "Ghaziabad"}
+{"text": "main rohini mein hu is hafte", "intent": "location_update", "lang": "hinglish", "location": "Rohini"}
+{"text": "main lajpat nagar me hu", "intent": "location_update", "lang": "hinglish", "location": "Lajpat Nagar"}
+{"text": "ab main pune mein rehta hun", "intent": "location_update", "lang": "hinglish", "location": "Pune"}
+{"text": "मैं नोएडा में हूँ", "intent": "location_update", "lang": "hi", "location": "नोएडा"}
+{"text": "अभी मैं गुड़गांव में हूँ", "intent": "location_update", "lang": "hi", "location": "गुड़गांव"}
+{"text": "I'm at Connaught Place.", "intent": "location_update", "lang": "en", "location": "Connaught Place"}
+{"text": "I am in Janakpuri for a month", "intent": "location_update", "lang": "en", "location": "Janakpuri"}
+{"text": "currently staying in Vasant Kunj", "intent": "location_update", "lang": "en", "location": "Vasant Kunj"}
+{"text": "is it safe to donate after covid vaccine?", "intent": "question", "lang": "en"}
+{"text": "how long does donation take?", "intent": "question", "lang": "en"}
+{"text": "Can I donate if I have a cold?", "intent": "question", "lang": "en"}
+{"text": "what should I eat before donating?", "intent": "question", "lang": "en"}
+{"text": "Should I bring my ID?", "intent": "question", "lang": "en"}
+{"text": "how often can I donate blood?", "intent": "question", "lang": "en"}
+{"text": "is there any side effect?", "intent": "question", "lang": "en"}
+{"text": "Can women donate during periods?", "intent": "question", "lang": "en"}
+{"text": "what is the minimum weight to donate", "intent": "question", "lang": "en"}
+{"text": "how many units will they take?", "intent": "question", "lang": "en"}
+{"text": "kya main tattoo ke baad donate kar sakta hu?", "intent": "question", "lang": "hinglish"}
+{"text": "kitna time lagta hai?", "intent": "question", "lang": "hinglish"}
+{"text": "kya khana kha ke aana hai?", "intent": "question", "lang": "hinglish"}
+{"text": "kab tak donate kar sakte hai age mein?", "intent": "question", "lang": "hinglish"}
+{"text": "kaise pata chalega ki blood mila?", "intent": "question", "lang": "hinglish"}
+{"text": "क्या शराब पीने के बाद खून दे सकते हैं?", "intent": "question", "lang": "hi"}
+{"text": "रक्तदान में कितना समय लगता है?", "intent": "question", "lang": "hi"}
+{"text": "क्या कोई साइड इफेक्ट होता है?", "intent": "question", "lang": "hi"}
+{"text": "कितने दिन बाद फिर दान कर सकते हैं?", "intent": "question", "lang": "hi"}
+{"text": "what documents do I need?", "intent": "question", "lang": "en"}
+{"text": "yes", "intent": "eligibility_answer", "lang": "en", "pending": "alcohol_24h", "answer": true}
+{"text": "no", "intent": "eligibility_answer", "lang": "en", "pending": "alcohol_24h", "answer": false}
+{"text": "No, I haven't", "intent": "eligibility_answer", "lang": "en", "pending": "alcohol_24h", "answer": false}
+{"text": "had a beer last night", "intent": "eligibility_answer", "lang": "en", "pending": "alcohol_24h", "answer": true}
+{"text": "never drink", "intent": "eligibility_answer", "lang": "en", "pending": "alcohol_24h", "answer": false}
+{"text": "kal raat ek peg liya tha", "intent": "eligibility_answer", "lang": "hinglish", "pending": "alcohol_24h", "answer": true}
+{"text": "nahi peeta main", "intent": "eligibility_answer", "lang": "hinglish", "pending": "alcohol_24h", "answer": false}
+{"text": "haan thodi daru pi thi", "intent": "eligibility_answer", "lang": "hinglish", "pending": "alcohol_24h", "answer": true}
+{"text": "nahi", "intent": "eligibility_answer", "lang": "hinglish", "pending": "alcohol_24h", "answer": false}
+{"text": "बिल्कुल नहीं", "intent": "eligibility_answer", "lang": "hi", "pending": "alcohol_24h", "answer": false}
+{"text": "हाँ, कल रात शराब पी थी", "intent": "eligibility_answer", "lang": "hi", "pending": "alcohol_24h", "answer": true}
+{"text": "no tattoo", "intent": "eligibility_answer", "lang": "en", "pending": "tattoo_12m", "answer": false}
+{"text": "yes got a tattoo in March", "intent": "eligibility_answer", "lang": "en", "pending": "tattoo_12m", "answer": true}
+{"text": "Nope, none", "intent": "eligibility_answer", "lang": "en", "pending": "tattoo_12m", "answer": false}
+{"text": "haan, ear piercing karwayi thi 2 mahine pehle", "intent": "eligibility_answer", "lang": "hinglish", "pending": "tattoo_12m", "answer": true}
+{"text": "nahi koi tattoo nahi", "intent": "eligibility_answer", "lang": "hinglish", "pending": "tattoo_12m", "answer": false}
+{"text": "नहीं", "intent": "eligibility_answer", "lang": "hi", "pending": "tattoo_12m", "answer": false}
+{"text": "हाँ, पिछले महीने टैटू बनवाया", "intent": "eligibility_answer", "lang": "hi", "pending": "tattoo_12m", "answer": true}
+{"text": "no fever, I'm fine", "intent": "eligibility_answer", "lang": "en", "pending": "unwell_now", "answer": false}
+{"text": "yes I have a cold", "intent": "eligibility_answer", "lang": "en", "pending": "unwell_now", "answer": true}
+{"text": "taking antibiotics since Monday", "intent": "eligibility_answer", "lang": "en", "pending": "unwell_now", "answer": true}
+{"text": "no, healthy", "intent": "eligibility_answer", "lang": "en", "pending": "unwell_now", "answer": false}
+{"text": "nahi bilkul theek hu", "intent": "eligibility_answer", "lang": "hinglish", "pending": "unwell_now", "answer": false}
+{"text": "haan halka bukhar hai", "intent": "eligibility_answer", "lang": "hinglish", "pending": "unwell_now", "answer": true}
+{"text": "nahi", "intent": "eligibility_answer", "lang": "hinglish", "pending": "unwell_now", "answer": false}
+{"text": "नहीं, मैं ठीक हूँ", "intent": "eligibility_answer", "lang": "hi", "pending": "unwell_now", "answer": false}
+{"text": "हाँ, बुखार है", "intent": "eligibility_answer", "lang": "hi", "pending": "unwell_now", "answer": true}
+{"text": "no", "intent": "eligibility_answer", "lang": "en", "pending": "donated_recently", "answer": false}
+{"text": "yes, donated in August", "intent": "eligibility_answer", "lang": "en", "pending": "donated_recently", "answer": true}
+{"text": "last donation was a year ago", "intent": "eligibility_answer", "lang": "en", "pending": "donated_recently", "answer": false}
+{"text": "haan pichle mahine diya tha", "intent": "eligibility_answer", "lang": "hinglish", "pending": "donated_recently", "answer": true}
+{"text": "nahi, kabhi nahi diya", "intent": "eligibility_answer", "lang": "hinglish", "pending": "donated_recently", "answer": false}
+{"text": "नहीं", "intent": "eligibility_answer", "lang": "hi", "pending": "donated_recently", "answer": false}
+{"text": "हाँ, दो महीने पहले दिया था", "intent": "eligibility_answer", "lang": "hi", "pending": "donated_recently", "answer": true}
+{"text": "yes", "intent": "eligibility_answer", "lang": "en", "pending": "tattoo_12m", "answer": true}
+{"text": "haan", "intent": "eligibility_answer", "lang": "hinglish", "pending": "unwell_now", "answer": true}
+{"text": "ji nahi", "intent": "eligibility_answer", "lang": "hinglish", "pending": "donated_recently", "answer": false}
+{"text": "stop", "intent": "stop", "lang": "en"}
+{"text": "STOP", "intent": "stop", "lang": "en"}
+{"text": "unsubscribe", "intent": "stop", "lang": "en"}
+{"text": "band karo", "intent": "stop", "lang": "hinglish"}
+{"text": "please stop messaging me", "intent": "stop", "lang": "en"}
+{"text": "remove my number", "intent": "stop", "lang": "en"}
+{"text": "mujhe message mat bhejo", "intent": "stop", "lang": "hinglish"}
+{"text": "मैसेज बंद करो", "intent": "stop", "lang": "hi"}
+{"text": "don't message me again", "intent": "stop", "lang": "en"}
+{"text": "Stop", "intent": "stop", "lang": "en"}
+{"text": "pause", "intent": "pause", "lang": "en", "pause_days": 30}
+{"text": "pause 10", "intent": "pause", "lang": "en", "pause_days": 10}
+{"text": "PAUSE 60", "intent": "pause", "lang": "en", "pause_days": 60}
+{"text": "pause 7", "intent": "pause", "lang": "en", "pause_days": 7}
+{"text": "pause for 2 weeks please", "intent": "pause", "lang": "en", "pause_days": 14}
+{"text": "ek mahine ke liye pause kar do", "intent": "pause", "lang": "hinglish", "pause_days": 30}
+{"text": "I'm travelling for a month, pause my alerts", "intent": "pause", "lang": "en", "pause_days": 30}
+{"text": "Pause 90", "intent": "pause", "lang": "en", "pause_days": 90}
+{"text": "pause 15", "intent": "pause", "lang": "en", "pause_days": 15}
+{"text": "थोड़े दिन के लिए रोक दो", "intent": "pause", "lang": "hi", "pause_days": 30}
+{"text": "👍", "intent": "unknown", "lang": "en"}
+{"text": "hello", "intent": "unknown", "lang": "en"}
+{"text": "Good morning", "intent": "unknown", "lang": "en"}
+{"text": "who is this", "intent": "unknown", "lang": "en"}
+{"text": "asdfgh", "intent": "unknown", "lang": "en"}
+{"text": "thanks", "intent": "unknown", "lang": "en"}
+{"text": "Happy Diwali!", "intent": "unknown", "lang": "en"}
+{"text": "ok noted", "intent": "unknown", "lang": "en"}
+{"text": "hmm", "intent": "unknown", "lang": "en"}
+{"text": "kaun bol raha hai", "intent": "unknown", "lang": "hinglish"}
+{"text": "namaste", "intent": "unknown", "lang": "hinglish"}
+{"text": "...", "intent": "unknown", "lang": "en"}
+{"text": "dhanyavaad", "intent": "unknown", "lang": "hinglish"}
+{"text": "नमस्ते", "intent": "unknown", "lang": "hi"}
+{"text": "धन्यवाद", "intent": "unknown", "lang": "hi"}
+{"text": "call me", "intent": "unknown", "lang": "en"}
+{"text": "🙏🙏", "intent": "unknown", "lang": "en"}
+{"text": "what?", "intent": "unknown", "lang": "en"}
+{"text": "received", "intent": "unknown", "lang": "en"}
+{"text": "jai hind", "intent": "unknown", "lang": "hinglish"}

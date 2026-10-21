@@ -1,0 +1,22 @@
+[
+  {"q": "How often can I donate blood?", "answerable": true, "expect_source": "eraktkoshfaq"},
+  {"q": "I had alcohol before going to donate. Is that okay?", "answerable": true, "expect_source": "eraktkoshfaq"},
+  {"q": "What should I eat before blood donation?", "answerable": true, "expect_source": "eraktkoshfaq"},
+  {"q": "What is the minimum age to donate blood?", "answerable": true, "expect_source": "eraktkosh"},
+  {"q": "What is the minimum weight to donate blood?", "answerable": true, "expect_source": "donateblood"},
+  {"q": "How long does the donation take?", "answerable": true, "expect_source": "donateblood"},
+  {"q": "What happens during pre-donation screening?", "answerable": true, "expect_source": "donateblood"},
+  {"q": "What should I do after donating blood?", "answerable": true, "expect_source": "donateblood"},
+  {"q": "Are there side effects of blood donation?", "answerable": true, "expect_source": "eraktkoshfaq"},
+  {"q": "How do I check platelet stock on eRaktKosh?", "answerable": true, "expect_source": "eraktkoshfaq"},
+  {"q": "Is cross matching done before blood is issued?", "answerable": true, "expect_source": "bsah"},
+  {"q": "What is a replacement donor and how long is a replacement card valid?", "answerable": true, "expect_source": "bsah"},
+  {"q": "Which infections is donated blood tested for?", "answerable": true, "expect_source": "bts"},
+  {"q": "Is paid blood donation allowed in India?", "answerable": true, "expect_source": "bts"},
+  {"q": "रक्तदान से पहले क्या खाना चाहिए?", "answerable": true, "expect_source": "eraktkoshfaq", "lang": "hi"},
+  {"q": "Who won the cricket world cup in 2011?", "answerable": false},
+  {"q": "What is the best phone under 20000 rupees?", "answerable": false},
+  {"q": "How do I renew my passport?", "answerable": false},
+  {"q": "Recommend a good restaurant in Saket", "answerable": false},
+  {"q": "What is the stock price of Infosys today?", "answerable": false}
+]

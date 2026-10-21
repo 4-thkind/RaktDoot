@@ -1,0 +1,54 @@
+[
+ {
+  "file": "requisition_slip.jpg",
+  "fields": {
+   "hospital": "Safdarjung Hospital",
+   "ward": "Surgery Ward 12",
+   "patient_name": "R. Kumar (sample)",
+   "patient_group": "B+",
+   "units": 2,
+   "component": "prbc",
+   "urgency": "urgent",
+   "date": "2026-10-19"
+  }
+ },
+ {
+  "file": "slip_platelets.jpg",
+  "fields": {
+   "hospital": "Sir Ganga Ram Hospital",
+   "ward": "Medicine 4",
+   "patient_name": "S. Devi (sample)",
+   "patient_group": "O+",
+   "units": 4,
+   "component": "platelets",
+   "urgency": "emergency",
+   "date": "2026-10-18"
+  }
+ },
+ {
+  "file": "slip_plasma.jpg",
+  "fields": {
+   "hospital": "Lok Nayak Hospital",
+   "ward": "Burns ICU",
+   "patient_name": "A. Khan (sample)",
+   "patient_group": "AB-",
+   "units": 3,
+   "component": "plasma",
+   "urgency": "urgent",
+   "date": "2026-10-17"
+  }
+ },
+ {
+  "file": "slip_whole.jpg",
+  "fields": {
+   "hospital": "AIIMS",
+   "ward": "Trauma Centre",
+   "patient_name": "M. Singh (sample)",
+   "patient_group": "A-",
+   "units": 1,
+   "component": "whole_blood",
+   "urgency": "routine",
+   "date": "2026-10-16"
+  }
+ }
+]
