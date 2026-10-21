@@ -1,0 +1,87 @@
+{
+ "requisition_slip.jpg": {
+  "kind": "slip",
+  "sha256": "88fb7015c61f89a71cca0001c6e58b731e38fe14ed94510c89501b865ba0555c",
+  "fields": {
+   "hospital": "Safdarjung Hospital",
+   "ward": "Surgery Ward 12",
+   "patient_name": "R. Kumar (sample)",
+   "patient_group": "B+",
+   "units": 2,
+   "component": "prbc",
+   "urgency": "urgent",
+   "date": "2026-10-19"
+  }
+ },
+ "slip_platelets.jpg": {
+  "kind": "slip",
+  "sha256": "0f2491b6413e9140bd09e25be58442d2e455304fa975d31d406f93a1e8b31b55",
+  "fields": {
+   "hospital": "Sir Ganga Ram Hospital",
+   "ward": "Medicine 4",
+   "patient_name": "S. Devi (sample)",
+   "patient_group": "O+",
+   "units": 4,
+   "component": "platelets",
+   "urgency": "emergency",
+   "date": "2026-10-18"
+  }
+ },
+ "slip_plasma.jpg": {
+  "kind": "slip",
+  "sha256": "1de1b40b8c83236165a5c4f21e1e9ca2e54ed16e7558a6ed2ea8ab58c4310b7e",
+  "fields": {
+   "hospital": "Lok Nayak Hospital",
+   "ward": "Burns ICU",
+   "patient_name": "A. Khan (sample)",
+   "patient_group": "AB-",
+   "units": 3,
+   "component": "plasma",
+   "urgency": "urgent",
+   "date": "2026-10-17"
+  }
+ },
+ "slip_whole.jpg": {
+  "kind": "slip",
+  "sha256": "e94dbb388cffe03a12562e5b0f1a6ea74da6012dd6d7b6a7277b9dfcf107a0d0",
+  "fields": {
+   "hospital": "AIIMS",
+   "ward": "Trauma Centre",
+   "patient_name": "M. Singh (sample)",
+   "patient_group": "A-",
+   "units": 1,
+   "component": "whole_blood",
+   "urgency": "routine",
+   "date": "2026-10-16"
+  }
+ },
+ "donor_card.jpg": {
+  "kind": "donor_card",
+  "sha256": "ee2b4cd9b4e48014053ce1ea77cb79240b1279ba770c71bc8c423dba6fc8c08e",
+  "fields": {
+   "donation_date": "2026-10-20",
+   "centre": "Indian Red Cross Society Blood Bank, New Delhi"
+  }
+ },
+ "voice_request.mp3": {
+  "kind": "audio",
+  "sha256": "f4b2ea9e4168f3134d863e4f5816c237250b07d59287de30fc2a40030d0c5927",
+  "transcript": "Papa ko B positive blood chahiye, Safdarjung hospital mein, do unit. Urgent hai.",
+  "language": "hinglish",
+  "note": "Synthetic voice (en-IN-NeerjaNeural, edge-tts). Demo mode returns this fixed transcript; local Whisper transcribes it for real."
+ },
+ "voice_request_hi.mp3": {
+  "kind": "audio",
+  "sha256": "81dbc4e436cfbdf3fb4ffdbc7bfab232dad0144e4cc09a8c634faabfa5532ae2",
+  "transcript": "मेरे पापा को बी पॉज़िटिव खून चाहिए, सफदरजंग अस्पताल में, दो यूनिट। बहुत जल्दी है।",
+  "language": "hi",
+  "note": "Synthetic voice (hi-IN-SwaraNeural, edge-tts). Demo mode returns this fixed transcript; local Whisper transcribes it for real."
+ },
+ "voice_accept.mp3": {
+  "kind": "audio",
+  "sha256": "660dabe036f0db2926ff9459677a4ca62c8fea76191394739d86a79012ded10e",
+  "transcript": "हाँ, मैं बीस मिनट में आ रहा हूँ।",
+  "language": "hi",
+  "note": "Synthetic voice (hi-IN-MadhurNeural, edge-tts). Demo mode returns this fixed transcript; local Whisper transcribes it for real."
+ }
+}
