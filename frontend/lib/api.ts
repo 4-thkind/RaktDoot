@@ -1,4 +1,5 @@
-export const API_BASE = (process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8000").replace(/\/$/, "");
+// empty = same origin: Next proxies /api to the backend (see next.config.mjs)
+export const API_BASE = (process.env.NEXT_PUBLIC_API_BASE || "").replace(/\/$/, "");
 
 export class ApiError extends Error {
   status: number;
