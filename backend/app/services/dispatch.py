@@ -8,13 +8,13 @@ from sqlalchemy import and_, func, or_, select
 from sqlalchemy.orm import Session
 
 from ..config import settings
-from ..core import eligibility, ranking
-from ..core.compatibility import compatible_donors
+from ..core import eligibility, explain, ranking
+from ..core.compatibility import compatible_donors, normalize_component
 from ..core.geo import bbox, haversine_km
 from ..db import utcnow
 from ..models import Donor, Notification, Request
-from . import whatsapp
-from .messages import GENDER_WORD, b, t
+from . import bandit, whatsapp
+from .messages import GENDER_WORD, b, component_word, t
 
 PENDING = ("sent", "delivered", "read")
 CONNECTED = ("connected", "donated", "deferred")
@@ -45,9 +45,13 @@ def find_candidates(db: Session, req: Request, radius_km: float, now: datetime |
     rest_m = today - timedelta(days=eligibility.rest_days("M"))
     rest_f = today - timedelta(days=eligibility.rest_days("F"))
     already = select(Notification.donor_id).where(Notification.request_id == req.id)
+    component = normalize_component(req.component)
+    groups = compatible_donors(req.patient_group, component)
+    if o_neg_reserved(req):
+        groups = [g for g in groups if g != "O-"]
 
     q = select(Donor).where(
-        Donor.blood_group.in_(compatible_donors(req.patient_group)),
+        Donor.blood_group.in_(groups),
         Donor.consent.is_(True),
         Donor.opted_out.is_(False),
         Donor.weight_ok.is_(True),
@@ -74,10 +78,25 @@ def find_candidates(db: Session, req: Request, radius_km: float, now: datetime |
         dist = haversine_km(req.hospital_lat, req.hospital_lng, d.lat, d.lng)
         if dist > radius_km:
             continue
-        feats = ranking.features(d, req.patient_group, dist, max_radius, local_hour, now)
+        feats = ranking.features(d, req.patient_group, dist, max_radius, local_hour, now, component)
         out.append({"donor": d, "distance_km": round(dist, 2), "features": feats, "score": ranking.score(feats)})
     out.sort(key=lambda c: c["score"], reverse=True)
     return out
+
+
+def o_neg_reserved(req: Request) -> bool:
+    """O- red cells suit every patient, so O- donors are held back until the request allows them
+    (wave 3+, scarce groups, or an unconfirmed group; see dispatch_agent)."""
+    return normalize_component(req.component) in ("prbc", "whole_blood") and req.patient_group != "O-" and not req.allow_o_neg
+
+
+def alerts_left(db: Session, req: Request, now: datetime | None = None) -> int:
+    """Hard caps per request: total alerts, and alerts in the last hour."""
+    now = now or utcnow()
+    total = db.scalar(select(func.count()).select_from(Notification).where(Notification.request_id == req.id)) or 0
+    hour = db.scalar(select(func.count()).select_from(Notification).where(
+        Notification.request_id == req.id, Notification.sent_at > now - timedelta(hours=1))) or 0
+    return max(0, min(settings.max_alerts_per_request - total, settings.max_alerts_per_hour - hour))
 
 
 def pick_wave(cands: list[dict], size: int, seed: str) -> list[dict]:
@@ -95,27 +114,42 @@ def connected_count(db: Session, req: Request) -> int:
     return db.scalar(select(func.count()).select_from(Notification).where(Notification.request_id == req.id, Notification.status.in_(CONNECTED))) or 0
 
 
-def alert_params(req: Request, donor: Donor, distance_km: float) -> dict:
-    lang = donor.language
+def alert_params(req: Request, donor: Donor, distance_km: float, reason: str = "") -> dict:
+    lang = donor.language if donor.language in ("en", "hi") else "en"
     return {
         "group": req.patient_group, "donor_group": donor.blood_group, "units": req.units,
-        "age": req.patient_age, "gender": GENDER_WORD[req.patient_gender][lang if lang in ("en", "hi") else "en"],
-        "hospital": req.hospital_name, "distance": f"{distance_km:.1f}",
+        "age": req.patient_age if req.patient_age else ("not given" if lang == "en" else "पता नहीं"),
+        "gender": GENDER_WORD[req.patient_gender][lang],
+        "hospital": req.hospital_name, "distance": f"{distance_km:.1f}", "component": component_word(req.component, lang),
+        "reason": reason or explain.why_you({}, distance_km, donor.blood_group, req.patient_group, lang),
+        "bank": req.hospital_name, "hours": 72,
     }
 
 
-def notify(db: Session, req: Request, cand: dict, wave: int) -> Notification:
+def _shortage_near(db: Session, req: Request) -> dict | None:
+    try:
+        from . import forecast
+        return forecast.shortage_near(db, req.hospital_lat, req.hospital_lng, normalize_component(req.component))
+    except Exception:  # noqa: BLE001  (the radar is optional; alerts must still go out)
+        return None
+
+
+def notify(db: Session, req: Request, cand: dict, wave: int, shortage: dict | None = None) -> Notification:
     donor: Donor = cand["donor"]
-    n = Notification(request_id=req.id, donor_id=donor.id, wave=wave, status="sent",
-                     score=cand["score"], distance_km=cand["distance_km"], features=cand["features"])
+    lang = donor.language
+    seg = bandit.segment(donor)
+    variant = "drive" if req.kind == "drive" else bandit.choose(db, seg)
+    reason = explain.why_you(cand["features"], cand["distance_km"], donor.blood_group, req.patient_group, lang, shortage)
+    n = Notification(request_id=req.id, donor_id=donor.id, wave=wave, status="sent", variant=variant, segment=seg,
+                     reason=reason[:200], score=cand["score"], distance_km=cand["distance_km"], features=cand["features"])
     db.add(n)
     db.flush()
-    params = alert_params(req, donor, cand["distance_km"])
-    lang = donor.language
+    params = alert_params(req, donor, cand["distance_km"], reason)
+    key = "drive_alert" if variant == "drive" else "alert" if variant == "standard" else f"alert_{variant}"
     msg = whatsapp.send(
-        db, donor.phone, t("alert", lang, **params),
+        db, donor.phone, t(key, lang, **params),
         buttons=[(f"acc:{n.id}", b("can_donate", lang)), (f"dec:{n.id}", b("not_today", lang))],
-        template=("alert", params, lang),
+        template=(key, params, lang),
     )
     n.wa_message_id = msg.wa_message_id
     if settings.whatsapp_mode == "mock" and "error" not in msg.payload:
@@ -130,30 +164,48 @@ def run_wave(db: Session, req: Request, now: datetime | None = None) -> int:
     now = now or utcnow()
     radii = settings.wave_radii_km
     max_waves = len(radii) + 2  # keep pulling from the widest ring for two more waves
+    left = alerts_left(db, req, now)
+    if left <= 0:
+        req.next_wave_at = now + timedelta(minutes=settings.wave_interval_min)
+        return 0
+    shortage = _shortage_near(db, req)
     while req.wave < max_waves:
         req.wave += 1
         radius = radii[min(req.wave - 1, len(radii) - 1)]
         cands = find_candidates(db, req, radius, now)
         if cands:
-            chosen = pick_wave(cands, settings.wave_size, f"{req.id}:{req.wave}")
+            chosen = pick_wave(cands, min(settings.wave_size, left), f"{req.id}:{req.wave}")
             for c in chosen:
-                notify(db, req, c, req.wave)
+                notify(db, req, c, req.wave, shortage)
             req.radius_km = radius
             req.next_wave_at = now + timedelta(minutes=settings.wave_interval_min)
             return len(chosen)
         req.radius_km = radius
     req.next_wave_at = None
-    if connected_count(db, req) < req.target_acceptances:
+    if connected_count(db, req) < req.target_acceptances and req.status != "needs_public_share":
         req.status = "needs_public_share"
+        tell_requester_all_asked(db, req)
     return 0
+
+
+def tell_requester_all_asked(db: Session, req: Request) -> None:
+    if req.kind == "drive" or not req.requester_phone:
+        return
+    lang = req.language or "en"
+    p = {"hospital": req.hospital_name, "link": f"{settings.public_base_url.rstrip('/')}/r/{req.share_slug}"}
+    whatsapp.send(db, req.requester_phone, t("rq_all_asked", lang, **p), template=("rq_all_asked", p, lang))
 
 
 def start_dispatch(db: Session, req: Request) -> int:
     if req.status != "open":
         raise ValueError(f"request is {req.status}")
+    from . import dispatch_agent
+
     req.status = "dispatching"
     req.dispatched_at = utcnow()
-    return run_wave(db, req)
+    sent = run_wave(db, req)
+    dispatch_agent.log_start(db, req, sent)
+    return sent
 
 
 def close_pending(db: Session, req: Request, message_key: str) -> int:
@@ -161,6 +213,8 @@ def close_pending(db: Session, req: Request, message_key: str) -> int:
     count = 0
     for n in db.scalars(select(Notification).where(Notification.request_id == req.id, Notification.status.in_(PENDING + ("accepted",)))).all():
         key = "already_covered" if n.status == "accepted" else message_key
+        if n.status in PENDING and utcnow() - n.sent_at > timedelta(minutes=15):
+            bandit.update(db, n.variant, n.segment, 0)  # had time to answer and did not: a non-acceptance
         n.status = "cancelled"
         lang = n.donor.language
         whatsapp.send(db, n.donor.phone, t(key, lang, hospital=req.hospital_name),
