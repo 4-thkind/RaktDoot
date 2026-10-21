@@ -11,6 +11,7 @@ export function Header() {
   const { user } = useAuth();
   const nav: [string, string][] = [
     ["/find", t("nav_find")],
+    ["/check", t("nav_check")],
     ["/donate", t("nav_donate")],
     ["/how-it-works", t("nav_how")],
   ];
@@ -58,10 +59,17 @@ export function Footer() {
   return (
     <footer className="footer">
       <div className="wrap">
+        <p style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+          <Link href="/radar">{t("nav_radar")}</Link>
+          <Link href="/camps">{t("nav_camps")}</Link>
+          <Link href="/recurring">{t("nav_recurring")}</Link>
+          <Link href="/simulator">WhatsApp simulator</Link>
+          <Link href="/admin">Team</Link>
+        </p>
         <p>{t("disclaimer")}</p>
         <p>
           Built by team Pookie Blinders for Azinhack 2026. Stock data:{" "}
-          <a href="https://eraktkosh.mohfw.gov.in/" rel="noreferrer" target="_blank">eRaktKosh</a>. Web agent:{" "}
+          <a href="https://eraktkosh.mohfw.gov.in/" rel="noreferrer" target="_blank">official MoHFW blood-centre records</a>. Web agent:{" "}
           <a href="https://www.tinyfish.ai/" rel="noreferrer" target="_blank">TinyFish</a>.
         </p>
       </div>

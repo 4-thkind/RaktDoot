@@ -13,7 +13,7 @@ import { LangProvider } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Rakt Doot | Emergency blood finder",
-  description: "Live blood stock at nearby blood centres from eRaktKosh, then compatible donors near the hospital on WhatsApp.",
+  description: "Live blood stock at nearby blood centres, compatible donors on WhatsApp, voice requests, shortage forecasts and more.",
   manifest: "/manifest.webmanifest",
   icons: { icon: "/icon.svg" },
 };
