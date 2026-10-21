@@ -9,4 +9,9 @@ frontend/next-env.d.ts
 frontend/tsconfig.tsbuildinfo
 .DS_Store
 backend/.venv/
-Rakt doot.md
+
+# Ignore all markdown files except README.md
+*.md
+**/*.md
+!README.md
+!**/README.md
