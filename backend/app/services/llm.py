@@ -61,8 +61,14 @@ NO = r"\b(no|nope|nahi|nahin|nai|na|not today|cant|can't|cannot|busy|sorry|nahi 
 DRANK = r"\b(peg|beer|daru|drink|drank|sharab|wine|alcohol|whisky|vodka)\b|शराब|पी थी"
 
 
+NUMBER_WORDS = {"बीस": "20", "दस": "10", "पंद्रह": "15", "तीस": "30", "पांच": "5", "पाँच": "5", "पच्चीस": "25", "चालीस": "40",
+                "पैंतालीस": "45", "bees": "20", "bis": "20", "das": "10", "pandrah": "15", "tees": "30", "paanch": "5", "pachees": "25", "chalis": "40"}
+
+
 def rule_parse(text: str, pending_question: str | None = None) -> dict:
     s = (text or "").strip().lower()
+    for w, n in NUMBER_WORDS.items():  # "बीस मिनट" / "bees minute" -> "20 मिनट"
+        s = re.sub(rf"(?<![\wऀ-ॿ]){w}(?=\s*(min|मिनट))", n, s)
     if not s:
         return _empty()
     if re.fullmatch(r"stop|unsubscribe|band karo", s):
@@ -91,26 +97,30 @@ def rule_parse(text: str, pending_question: str | None = None) -> dict:
     return _empty()
 
 
+def chat_json(system: str, user: str | list, model: str | None = None, timeout: float = 20) -> dict:
+    """One JSON-mode chat completion on the configured OpenAI-compatible endpoint. Raises on any
+    failure; callers own the fallback. `user` may be a content list (text + image_url parts)."""
+    if not settings.llm_api_key:
+        raise RuntimeError("LLM_API_KEY not set")
+    r = httpx.post(
+        f"{settings.llm_base_url.rstrip('/')}/chat/completions",
+        headers={"Authorization": f"Bearer {settings.llm_api_key}"},
+        json={"model": model or settings.llm_model, "temperature": 0, "response_format": {"type": "json_object"},
+              "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}]},
+        timeout=timeout,
+    )
+    r.raise_for_status()
+    data = json.loads(r.json()["choices"][0]["message"]["content"])
+    if not isinstance(data, dict):
+        raise ValueError("LLM did not return a JSON object")
+    return data
+
+
 def parse_intent(text: str, context: str, pending_question: str | None = None) -> dict:
     if settings.llm_api_key:
         try:
-            r = httpx.post(
-                f"{settings.llm_base_url.rstrip('/')}/chat/completions",
-                headers={"Authorization": f"Bearer {settings.llm_api_key}"},
-                json={
-                    "model": settings.llm_model,
-                    "temperature": 0,
-                    "response_format": {"type": "json_object"},
-                    "messages": [
-                        {"role": "system", "content": SYSTEM},
-                        {"role": "user", "content": f"Context: {context}\nPending eligibility question: {pending_question or 'none'}\nDonor message: {text}"},
-                    ],
-                },
-                timeout=12,
-            )
-            r.raise_for_status()
-            content = r.json()["choices"][0]["message"]["content"]
-            return _validate(json.loads(content))
+            raw = chat_json(SYSTEM, f"Context: {context}\nPending eligibility question: {pending_question or 'none'}\nDonor message: {text}", timeout=12)
+            return _validate(raw)
         except Exception as e:
             log.warning("LLM parse failed, using rules: %s", e)
     return rule_parse(text, pending_question)

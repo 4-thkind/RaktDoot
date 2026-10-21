@@ -97,6 +97,65 @@ def send(
     return msg
 
 
+def speak(db: Session, phone: str, text: str, lang: str = "en") -> ChatMessage | None:
+    """Send `text` as a voice note too (TTS). Never raises; returns None when no voice could be made."""
+    from ..models import MediaFile
+    from . import tts
+
+    out = tts.synthesize(text, lang)
+    if out is None:
+        return None
+    data, mime, engine = out
+    media = MediaFile(mime=mime, data=data, engine=engine)
+    db.add(media)
+    db.flush()
+    payload: dict = {"audio": f"/api/media/{media.id}", "tts": engine, "transcript": tts.speakable(text)}
+    mode = settings.whatsapp_mode
+    if mode != "mock" and phone.startswith(SYNTHETIC_PREFIX):
+        mode, payload["skipped"] = "mock", "synthetic donor"
+    wa_id = None
+    try:
+        if mode == "cloud":
+            wa_id = _cloud_audio(data, mime, phone)
+        elif mode == "twilio":
+            wa_id = _send_twilio_media(phone, f"{settings.public_api_base.rstrip('/')}/api/media/{media.id}")
+    except Exception as e:  # noqa: BLE001
+        payload["error"] = str(e)[:300]
+        log.warning("voice reply to %s failed: %s", phone, e)
+    msg = ChatMessage(phone=phone, direction="out", kind="audio", body="[voice reply]", payload=payload, wa_message_id=wa_id)
+    db.add(msg)
+    db.flush()
+    return msg
+
+
+def _cloud_audio(data: bytes, mime: str, phone: str) -> str | None:
+    if not (settings.whatsapp_token and settings.whatsapp_phone_number_id):
+        raise RuntimeError("WHATSAPP_TOKEN / WHATSAPP_PHONE_NUMBER_ID not set")
+    up = httpx.post(f"{GRAPH}/{settings.whatsapp_phone_number_id}/media", headers={"Authorization": f"Bearer {settings.whatsapp_token}"},
+                    files={"file": ("reply" + (".mp3" if "mpeg" in mime else ".wav"), data, mime)},
+                    data={"messaging_product": "whatsapp", "type": mime}, timeout=30)
+    if up.status_code >= 400:
+        raise RuntimeError(f"media upload {up.status_code}: {up.text[:200]}")
+    return _cloud_post({"to": phone, "type": "audio", "audio": {"id": up.json()["id"]}})
+
+
+def _send_twilio_media(phone: str, url: str) -> str | None:
+    r = httpx.post(f"https://api.twilio.com/2010-04-01/Accounts/{settings.twilio_account_sid}/Messages.json",
+                   auth=(settings.twilio_account_sid, settings.twilio_auth_token),
+                   data={"From": settings.twilio_from, "To": f"whatsapp:+{phone}", "MediaUrl": url}, timeout=15)
+    if r.status_code >= 400:
+        raise RuntimeError(f"twilio {r.status_code}: {r.text[:200]}")
+    return r.json().get("sid")
+
+
+def send_sms_mock(db: Session, phone: str, sender: str, text: str) -> ChatMessage:
+    """An SMS from an outside system (the MOCK camp portal's OTP). Shown in the simulator, never sent."""
+    msg = ChatMessage(phone=phone, direction="out", kind="sms", body=text, payload={"sms_from": sender})
+    db.add(msg)
+    db.flush()
+    return msg
+
+
 def log_inbound(db: Session, phone: str, text: str, payload: dict | None = None, wa_id: str | None = None) -> None:
     db.add(ChatMessage(phone=phone, direction="in", kind="text", body=text, payload=payload or {}, wa_message_id=wa_id))
     conv = conversation(db, phone)
