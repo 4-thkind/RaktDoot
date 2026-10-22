@@ -11,8 +11,8 @@ from .config import settings
 from .db import init_db, session_scope
 from .jobs import ticker
 from .services import stt
-from .models import BloodBank, Donor, GuideChunk
-from .seed import seed_blood_banks, seed_donors, seed_extras
+from .models import BloodBank, ChatMessage, Conversation, Donor, GuideChunk
+from .seed import seed_blood_banks, seed_chats, seed_donors, seed_extras
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
@@ -34,6 +34,10 @@ async def lifespan(_app: FastAPI):
             db.flush()
         if not db.scalar(select(func.count()).select_from(GuideChunk)):
             seed_extras(db)
+        if settings.whatsapp_mode == "mock":  # every restart opens an empty WhatsApp simulator
+            db.execute(ChatMessage.__table__.delete())
+            db.execute(Conversation.__table__.delete())
+            seed_chats(db)
     task = asyncio.create_task(ticker.run_forever())
     warm = asyncio.create_task(asyncio.to_thread(stt.warm))  # load (and on first run download) the local speech model
     yield
