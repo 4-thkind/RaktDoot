@@ -3,6 +3,7 @@
 import { useParams, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 import { GuidePanel } from "@/components/GuidePanel";
+import { PrintSlip } from "@/components/PrintSlip";
 import { DispatchPlate } from "@/components/ProximityPlate";
 import { API_BASE, api, type Snapshot } from "@/lib/api";
 import { formatPhone, mapLink, show, telLink, waLink } from "@/lib/blood";
@@ -232,6 +233,7 @@ function Dashboard() {
       )}
 
       <section className="stack" style={{ marginTop: 28, ["--gap" as string]: "10px" }}>
+        <button className="btn btn-secondary btn-block" onClick={() => window.print()}>{t("print_slip")}</button>
         <div className="row">
           <button className="btn btn-quiet" style={{ flex: 1 }} onClick={shareLink}>{copied ? t("copied") : t("share")}</button>
           <a className="btn btn-quiet" style={{ flex: 1 }} href={`https://wa.me/?text=${encodeURIComponent(snap.preview)}`} target="_blank" rel="noreferrer">{t("share_wa")}</a>
@@ -254,6 +256,7 @@ function Dashboard() {
       </section>
 
       <div style={{ marginTop: 32 }}><GuidePanel /></div>
+      <PrintSlip snap={snap} />
     </div>
   );
 }
