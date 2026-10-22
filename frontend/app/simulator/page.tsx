@@ -112,7 +112,9 @@ function Simulator() {
     return <div className="narrow" style={{ paddingTop: 32 }}><p className="note">The simulator only runs when the backend has WHATSAPP_MODE=mock. This server sends real WhatsApp messages.</p></div>;
   }
 
-  const lastOptionsId = chat ? [...chat.messages].reverse().find((m) => m.direction === "out" && m.options)?.id : undefined;
+  // only the newest bot message is answerable, like real WhatsApp flows; older questions are already answered
+  const lastOut = chat ? [...chat.messages].reverse().find((m) => m.direction === "out" && m.kind !== "audio" && m.kind !== "location") : undefined;
+  const lastOptionsId = lastOut?.options ? lastOut.id : undefined;
 
   return (
     <div className="wrap" style={{ paddingTop: 24 }}>
@@ -135,6 +137,11 @@ function Simulator() {
                 {GROUPS.map((g) => <option key={g} value={g}>{show(g)}</option>)}
               </select>
               <button className="btn btn-quiet btn-sm" onClick={() => setPhone("91" + String(Math.floor(7000000000 + Math.random() * 2999999999)))}>New number</button>
+              <button className="btn btn-quiet btn-sm" onClick={async () => {
+                if (!window.confirm("Clear every chat in the simulator?")) return;
+                await api("/api/mock/clear", { method: "POST" }).catch((e) => setError(e.message));
+                setChat(null); setPhone(null); loadList();
+              }}>Clear chats</button>
             </div>
           </div>
           <ul>
