@@ -256,8 +256,7 @@ def connect(db: Session, n: Notification) -> None:
     if req.kind == "drive":  # a donor drive has no family to call
         whatsapp.send(db, donor.phone, t("drive_connected", lang, name=donor.name.split()[0], bank=req.hospital_name, map=map_link))
     else:
-        params = {"name": donor.name.split()[0], "hospital": req.hospital_name, "ref": req.id[:6].upper(),
-                  "requester": req.requester_name, "phone": req.requester_phone, "map": map_link}
+        params = {"name": donor.name.split()[0], "hospital": req.hospital_name, "ref": req.id[:6].upper(), "map": map_link}
         whatsapp.send(db, donor.phone, t("connected", lang, **params), template=("connected", params, lang))
         _tell_family(db, req, n)
     whatsapp.send(db, donor.phone, req.hospital_name,
