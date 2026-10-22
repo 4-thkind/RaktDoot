@@ -10,7 +10,7 @@ from datetime import date, timedelta
 from sqlalchemy.orm import Session
 
 from .db import Base, engine, utcnow
-from .models import BloodBank, Donor
+from .models import BloodBank, ChatMessage, Donor
 
 SYNTHETIC_PREFIX = "9100000"
 
@@ -119,6 +119,18 @@ def seed_donors(db: Session, n: int = 200, seed: int = 42) -> int:
     return n
 
 
+def seed_chats(db: Session) -> int:
+    """Give every synthetic donor the chat they would have from signing up (JOIN, then the welcome),
+    so the WhatsApp simulator never opens on an empty phone."""
+    from .services.messages import t
+    donors = db.query(Donor).filter(Donor.synthetic.is_(True)).all()
+    for d in donors:
+        db.add(ChatMessage(phone=d.phone, direction="in", kind="text", body="JOIN", payload={}))
+        db.add(ChatMessage(phone=d.phone, direction="out", kind="text", payload={},
+                           body=t("welcome", d.language, name=d.name.split()[0], group=d.blood_group)))
+    return len(donors)
+
+
 def reset_and_seed(db: Session, donors: int = 200) -> dict:
     """Wipe every table and re-seed. Rows are deleted rather than tables dropped, so open
     connections (live dashboards) are not blocked."""
@@ -128,6 +140,7 @@ def reset_and_seed(db: Session, donors: int = 200) -> dict:
     banks = seed_blood_banks(db)
     ds = seed_donors(db, donors)
     db.flush()
+    seed_chats(db)
     extras = seed_extras(db)
     db.commit()
     from .services import forecast
