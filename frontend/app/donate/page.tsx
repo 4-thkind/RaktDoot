@@ -53,21 +53,21 @@ const C = {
       "At most one alert a day, and only for patients your blood can help.",
       "Nothing at all during your rest period after you donate: 90 days for men, 120 days for women.",
       "No alerts between 11 pm and 7 am unless you ask for night alerts.",
-      "Your number is shared with a family only after you tap I can donate and pass the four health questions.",
+      "Your number is shared with a family only after you tap I can donate and pass the five health questions.",
       "Reply PAUSE 30 for a break, or STOP to leave. Nothing else to uninstall."
     ],
     "hi": [
       "दिन में अधिकतम एक अलर्ट, और केवल उन मरीज़ों के लिए जिन्हें आपका खून दिया जा सकता है।",
       "दान के बाद आराम के समय में कोई संदेश नहीं: पुरुष 90 दिन, महिलाएं 120 दिन।",
       "रात 11 से सुबह 7 तक कोई अलर्ट नहीं, जब तक आप रात के अलर्ट न चुनें।",
-      "आपका नंबर परिवार को तभी मिलता है जब आप 'मैं दान करूँगा' दबाएं और चार सवालों में पास हों।",
+      "आपका नंबर परिवार को तभी मिलता है जब आप 'मैं दान करूँगा' दबाएं और पांच सवालों में पास हों।",
       "ब्रेक के लिए PAUSE 30, छोड़ने के लिए STOP। अनइंस्टॉल करने को कुछ नहीं।"
     ],
     "mr": [
       "दिवसाला जास्तीत जास्त एक सूचना, फक्त तुमचे रक्त उपयोगी पडणाऱ्या रुग्णांसाठी.",
       "रक्तदानानंतर विश्रांतीच्या काळात संदेश नाही: पुरुषांसाठी 90 दिवस, स्त्रियांसाठी 120 दिवस.",
       "तुम्ही रात्रीच्या सूचना निवडल्याशिवाय रात्री 11 ते सकाळी 7 पर्यंत सूचना नाहीत.",
-      "तुम्ही रक्तदानाचा होकार देऊन चार आरोग्य प्रश्नांत पात्र ठरल्यानंतरच तुमचा नंबर कुटुंबाला दिला जातो.",
+      "तुम्ही रक्तदानाचा होकार देऊन पाच आरोग्य प्रश्नांत पात्र ठरल्यानंतरच तुमचा नंबर कुटुंबाला दिला जातो.",
       "विश्रांतीसाठी PAUSE 30 किंवा सोडण्यासाठी STOP पाठवा. काहीही अनइंस्टॉल करण्याची गरज नाही."
     ],
     "bn": [
