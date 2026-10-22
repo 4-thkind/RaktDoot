@@ -31,7 +31,14 @@ def client():
     with TestClient(app) as c:
         from app.services import camp_registration
         # the registration automation talks HTTP to the portal; point it at the in-process MOCK portal
-        camp_registration._client = lambda: TestClient(app, base_url="http://testserver/mock-portal")
+        class PortalClient(TestClient):  # no lifespan: app startup (which clears mock chats) must run only once
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *exc):
+                return None
+
+        camp_registration._client = lambda: PortalClient(app, base_url="http://testserver/mock-portal")
         yield c
 
 
