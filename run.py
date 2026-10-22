@@ -121,6 +121,16 @@ def print_qr(url: str) -> None:
     qr.print_ascii(invert=True)
 
 
+def env_file_value(key: str) -> str:
+    try:
+        for line in (ROOT / ".env").read_text(encoding="utf-8").splitlines():
+            if line.strip().startswith(f"{key}="):
+                return line.split("=", 1)[1].strip().lower()
+    except OSError:
+        pass
+    return os.environ.get(key, "").lower()
+
+
 def main() -> None:
     fix_path()
     if not shutil.which("docker"):
@@ -130,7 +140,9 @@ def main() -> None:
     if "--reset" in sys.argv:
         subprocess.run(compose + ["down", "-v"], check=True)
     tunnel, public = (None, None) if "--no-tunnel" in sys.argv else start_tunnel()
-    env = {**os.environ, **({"PUBLIC_BASE_URL": public} if public else {})}  # links in WhatsApp messages open on the phone
+    env = {**os.environ}
+    if public:  # links in WhatsApp messages open on the phone; Twilio reaches the bot through the same tunnel
+        env.update(PUBLIC_BASE_URL=public, PUBLIC_API_BASE=public, TWILIO_WEBHOOK_URL=f"{public}/webhooks/twilio")
     try:
         if subprocess.run(compose + ["up", "--build", "-d"], env=env).returncode != 0:
             sys.exit("docker compose failed; see the output above.")
@@ -141,6 +153,10 @@ def main() -> None:
         if public:
             print(f"  Phone:    {public}\n\n  Scan to open Rakt Doot on your phone:\n")
             print_qr(public)
+            if "twilio" in env_file_value("WHATSAPP_MODE"):
+                print("\n  WhatsApp (Twilio sandbox): set 'When a message comes in' (POST) at\n"
+                      "  https://console.twilio.com/us1/develop/sms/try-it-out/whatsapp-learn  to\n"
+                      f"    {public}/webhooks/twilio\n  (the tunnel URL changes every run, so update it each time)")
         print("\n  Ctrl+C stops everything (your data is kept).\n")
         subprocess.run(compose + ["logs", "-f", "--since", "1s", "backend", "frontend"], env=env)
     except KeyboardInterrupt:
