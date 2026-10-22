@@ -12,7 +12,7 @@ from ..db import get_db, session_scope, utcnow
 from ..jobs.ticker import tick
 from ..models import BloodBank, Donation, Donor, Notification, Recipe, Request, StockHistory, TinyFishRun
 from ..seed import reset_and_seed
-from ..services import bandit, camps, directory, guide, stt, tinyfish_client
+from ..services import bandit, camps, directory, dispatch, guide, stt, tinyfish_client
 from ..services.whatsapp import click_to_chat_link
 from .common import iso, require_admin
 
@@ -155,3 +155,22 @@ def bandit_simulate(n: int = Query(600, ge=50, le=5000), db: Session = Depends(g
     out = bandit.simulate(db, n, seed=int(utcnow().timestamp()) % 10000)
     db.commit()
     return out
+
+# ---------------------------------------------------------------- running requests (a kill switch for forgotten ones)
+RUNNING = ("open",) + dispatch.ACTIVE_REQUEST
+
+@router.get("/admin/requests/running", dependencies=[Depends(require_admin)])
+def running_requests(db: Session = Depends(get_db)):
+    rows = db.scalars(select(Request).where(Request.status.in_(RUNNING)).order_by(Request.created_at.desc())).all()
+    return [{"id": r.id, "group": r.patient_group, "units": r.units, "component": r.component, "hospital": r.hospital_name,
+             "kind": r.kind, "status": r.status, "created_at": iso(r.created_at), "expires_at": iso(r.expires_at)} for r in rows]
+
+@router.post("/admin/requests/stop", dependencies=[Depends(require_admin)])
+def stop_requests(rid: str | None = None, db: Session = Depends(get_db)):
+    """Stop one request (rid) or, without rid, every running one. Donors get the usual 'no longer needed' notice."""
+    q = select(Request).where(Request.status.in_(RUNNING))
+    rows = db.scalars(q.where(Request.id == rid) if rid else q).all()
+    for r in rows:
+        dispatch.close(db, r, "cancelled")
+    db.commit()
+    return {"stopped": len(rows)}
