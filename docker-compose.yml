@@ -21,6 +21,8 @@ services:
     environment:
       DATABASE_URL: postgresql://raktdoot:raktdoot@db:5432/raktdoot
       PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:3000}   # run.py sets the tunnel URL for phone links
+      PUBLIC_API_BASE: ${PUBLIC_API_BASE:-http://localhost:8000}   # voice-reply links Twilio fetches
+      TWILIO_WEBHOOK_URL: ${TWILIO_WEBHOOK_URL:-}                 # exact URL Twilio signs; run.py sets it
     volumes: [models:/root/.cache/huggingface]   # local Whisper model, downloaded once
     ports: ["8000:8000"]
     depends_on:
