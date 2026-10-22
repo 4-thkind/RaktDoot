@@ -64,7 +64,12 @@ _ROWS = {
 "no_request": ["This request is no longer available, or you did not receive its alert.", "अनुरोध उपलब्ध नहीं है या इसका अलर्ट आपको नहीं भेजा गया था।", "विनंती उपलब्ध नाही किंवा तिची सूचना तुम्हाला पाठवली नव्हती.", "অনুরোধটি আর নেই অথবা আপনাকে এটির বার্তা পাঠানো হয়নি।", "இந்தக் கோரிக்கை கிடைக்கவில்லை அல்லது அதன் அறிவிப்பு உங்களுக்கு அனுப்பப்படவில்லை."],
 "closed": ["This request has closed.", "यह अनुरोध बंद हो गया है।", "ही विनंती बंद झाली आहे.", "এই অনুরোধ বন্ধ হয়েছে।", "இந்தக் கோரிக்கை முடிவடைந்தது."],
 "first": ["First send /donate followed by the request code from your alert.", "पहले अलर्ट में दिया /donate और अनुरोध कोड भेजें।", "आधी सूचनेतील /donate आणि विनंती कोड पाठवा.", "প্রথমে বার্তার /donate এবং অনুরোধের কোড পাঠান।", "முதலில் அறிவிப்பிலுள்ள /donate மற்றும் கோரிக்கைக் குறியீட்டை அனுப்பவும்."],
-"help": ["Commands: /stop, /resume, or /donate REQUEST_CODE from an alert. During screening reply YES or NO.", "कमांड: /stop, /resume, या अलर्ट का /donate REQUEST_CODE। सवालों के जवाब YES या NO में दें।", "कमांड: /stop, /resume किंवा सूचनेतील /donate REQUEST_CODE. प्रश्नांना YES किंवा NO उत्तर द्या.", "কমান্ড: /stop, /resume অথবা বার্তার /donate REQUEST_CODE। প্রশ্নের উত্তর YES বা NO দিন।", "கட்டளைகள்: /stop, /resume அல்லது அறிவிப்பிலுள்ள /donate REQUEST_CODE. கேள்விகளுக்கு YES அல்லது NO எனப் பதிலளிக்கவும்."]
+"help": ["Commands: /stop, /resume, or /donate REQUEST_CODE from an alert. During screening reply YES or NO.", "कमांड: /stop, /resume, या अलर्ट का /donate REQUEST_CODE। सवालों के जवाब YES या NO में दें।", "कमांड: /stop, /resume किंवा सूचनेतील /donate REQUEST_CODE. प्रश्नांना YES किंवा NO उत्तर द्या.", "কমান্ড: /stop, /resume অথবা বার্তার /donate REQUEST_CODE। প্রশ্নের উত্তর YES বা NO দিন।", "கட்டளைகள்: /stop, /resume அல்லது அறிவிப்பிலுள்ள /donate REQUEST_CODE. கேள்விகளுக்கு YES அல்லது NO எனப் பதிலளிக்கவும்."],
+"btn_donate": ["I can donate", "मैं दान कर सकता/सकती हूँ", "मी दान करू शकतो/शकते", "আমি দান করতে পারি", "நான் தானம் செய்ய முடியும்"],
+"btn_decline": ["Can't today", "आज नहीं", "आज नाही", "আজ নয়", "இன்று முடியாது"],
+"btn_yes": ["Yes", "हाँ", "हो", "হ্যাঁ", "ஆம்"],
+"btn_no": ["No", "नहीं", "नाही", "না", "இல்லை"],
+"declined": ["No problem. We will not remind you about this request.", "कोई बात नहीं। इस अनुरोध के लिए हम आपको दोबारा याद नहीं दिलाएंगे।", "हरकत नाही. या विनंतीसाठी पुन्हा आठवण करणार नाही.", "কোনো সমস্যা নেই। এই অনুরোধের জন্য আর মনে করাব না।", "பரவாயில்லை. இந்தக் கோரிக்கைக்கு மீண்டும் நினைவூட்ட மாட்டோம்."],
 }
 TEXT = {key: dict(zip(LANGUAGES, values)) for key, values in _ROWS.items()}
 
