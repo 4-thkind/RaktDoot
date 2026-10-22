@@ -104,6 +104,7 @@ hr.rule { border: 0; border-top: 1px solid var(--rule); margin: 32px 0; }
 .navbar a.nav-cta:hover, .navbar a.nav-cta[aria-current="page"] { background: var(--burgundy-press); color: var(--ivory); }
 main { padding-top: 30px; } /* room for the dock's lower half */
 main:has(> .hm-hero:first-child) { padding-top: 0; }
+header + aside { margin-top: 30px; } /* Telegram connect panel sits between header and main */
 .header-actions { display: flex; align-items: center; gap: 12px; margin-left: auto; }
 .idbar .header-actions .lang { margin-left: 0; }
 .tools-dropdown { position: relative; }

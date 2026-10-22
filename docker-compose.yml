@@ -25,8 +25,27 @@ services:
       TWILIO_WEBHOOK_URL: ${TWILIO_WEBHOOK_URL:-}                 # exact URL Twilio signs; run.py sets it
     volumes: [models:/root/.cache/huggingface]   # local Whisper model, downloaded once
     ports: ["8000:8000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; r=httpx.get('http://127.0.0.1:8000/openapi.json', timeout=3); r.raise_for_status()"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
     depends_on:
       db: { condition: service_healthy }
+
+  telegram:
+    build: ./backend
+    command: ["python", "-m", "app.telegram"]
+    restart: unless-stopped
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgresql://raktdoot:raktdoot@db:5432/raktdoot
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:3000}
+    depends_on:
+      backend: { condition: service_healthy }
 
   frontend:
     build:
