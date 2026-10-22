@@ -72,13 +72,23 @@ TEXT: dict[str, dict[str, str]] = {
     },
     # --- session messages (inside the 24 h window opened by the donor's reply) ---
     "pre_screen_intro": {
-        "en": "Thank you. Four quick questions first, so you are not turned away at the blood centre.",
-        "hi": "धन्यवाद। पहले चार छोटे सवाल, ताकि ब्लड सेंटर पर आपको लौटना न पड़े।",
+        "en": "Thank you. Five quick health questions first, so you are not turned away at the blood centre.",
+        "hi": "धन्यवाद। पहले पांच छोटे स्वास्थ्य सवाल, ताकि ब्लड सेंटर पर आपको लौटना न पड़े।",
     },
     "ineligible": {
-        "en": "Thank you for answering. You should not donate today, but we will reach you next time. The family is being connected to other donors.",
-        "hi": "जवाब देने के लिए धन्यवाद। आज आप रक्तदान न करें, अगली बार हम फिर संपर्क करेंगे। परिवार को दूसरे डोनर से जोड़ा जा रहा है।",
+        "en": "Not eligible today: {reason}, so you should not donate today. Thank you for answering honestly; we will reach you next time. The family is being connected to other donors.",
+        "hi": "आज योग्य नहीं: {reason}, इसलिए आज रक्तदान न करें। सच बताने के लिए धन्यवाद; अगली बार हम फिर संपर्क करेंगे। परिवार को दूसरे डोनर से जोड़ा जा रहा है।",
     },
+    "why_alcohol_24h": {"en": "you had alcohol in the last 24 hours", "hi": "आपने पिछले 24 घंटे में शराब पी है"},
+    "why_tattoo_12m": {"en": "you had a tattoo, piercing, surgery or major dental work in the last 12 months", "hi": "पिछले 12 महीने में आपका टैटू, पियर्सिंग, ऑपरेशन या दांत का बड़ा इलाज हुआ है"},
+    "why_unwell_now": {"en": "you are unwell today (fever, cold, cough, weakness or infection)", "hi": "आज आपकी तबीयत ठीक नहीं है (बुखार, ज़ुकाम, खांसी, कमज़ोरी या संक्रमण)"},
+    "why_medication_now": {"en": "you are taking medicine that can affect donation", "hi": "आप ऐसी दवा ले रहे हैं जो रक्तदान पर असर डाल सकती है"},
+    "why_donated_recently": {"en": "you donated blood too recently", "hi": "आपने हाल ही में रक्तदान किया है"},
+    "eligible_today": {
+        "en": "All your answers are fine: you are eligible to donate today. The blood centre will do a final health check before you donate.",
+        "hi": "आपके सभी जवाब ठीक हैं: आप आज रक्तदान कर सकते हैं। रक्तदान से पहले ब्लड सेंटर अंतिम जांच करेगा।",
+    },
+    "prescreen_done": {"en": "You have already answered these questions for this request.", "hi": "इस अनुरोध के लिए आप ये सवाल पहले ही जवाब दे चुके हैं।"},
     "declined": {
         "en": "No problem. Thank you for letting us know.",
         "hi": "कोई बात नहीं। बताने के लिए धन्यवाद।",
