@@ -21,7 +21,7 @@ from .telegram_i18n import LANGUAGES, tr, question_text
 
 log = logging.getLogger("telegram")
 router = APIRouter(prefix="/api/telegram", tags=["telegram"])
-ALERT_GAP = timedelta(minutes=5)  # at most one request alert per donor per 5 minutes
+ALERT_GAP = timedelta(minutes=5)  # the same request is repeated at most once per 5 minutes
 MAX_REMINDERS = 3  # an unanswered alert is repeated every ALERT_GAP, this many times, then left alone
 
 
@@ -110,8 +110,10 @@ def call(method, **payload):
     return data["result"]
 
 
-def say(chat, text):
-    call("sendMessage", chat_id=chat, text=text)
+def say(chat, text, buttons=None):
+    """buttons: [(label, callback_data), ...] shown as one row of tap buttons."""
+    extra = {"reply_markup": {"inline_keyboard": [[{"text": t, "callback_data": c} for t, c in buttons]]}} if buttons else {}
+    call("sendMessage", chat_id=chat, text=text, **extra)
     time.sleep(1.1)  # conservative per-chat limit; enough for a small demo
 
 
@@ -120,6 +122,7 @@ def handle_message(message):
         return
     chat = str(message["chat"]["id"])
     text = message.get("text", "").strip()
+    buttons = None
     if text.startswith("/start "):
         digest = hashlib.sha256(text.split(maxsplit=1)[1].encode()).hexdigest()
         with session_scope() as db:
@@ -148,6 +151,12 @@ def handle_message(message):
             reply = tr("resumed" if d.active else "stopped", lang)
         elif not d.active:
             reply = tr("paused", lang)
+        elif text.lower().startswith("/decline "):
+            r = db.scalar(select(Request).where(Request.share_slug == text.split(maxsplit=1)[1]))
+            a = db.scalar(select(TelegramAlert).where(TelegramAlert.user_id == d.user_id, TelegramAlert.request_id == r.id)) if r else None
+            if a and a.status in ("pending", "sent"):
+                a.status = "declined"  # ends the 5-minute reminders for this request
+            reply = tr("declined", lang)
         elif text.lower().startswith("/donate "):
             slug = text.split(maxsplit=1)[1]
             r = db.scalar(select(Request).where(Request.share_slug == slug))
@@ -158,7 +167,8 @@ def handle_message(message):
                 # One current screening per donor. Old answers never carry over.
                 db.execute(update(TelegramAlert).where(TelegramAlert.user_id == d.user_id, TelegramAlert.status == "screening").values(status="sent"))
                 a.status, a.answers = "screening", {}
-                reply = tr("intro", lang) + "\n" + question_text(questions()[0], lang) + "\n" + tr("reply", lang)
+                reply = tr("intro", lang) + "\n" + question_text(questions()[0], lang)
+                buttons = yes_no(lang)
         elif text.upper() in ("YES", "NO"):
             a = db.scalar(select(TelegramAlert).where(TelegramAlert.user_id == d.user_id, TelegramAlert.status == "screening"))
             r = db.get(Request, a.request_id) if a else None
@@ -177,13 +187,35 @@ def handle_message(message):
                     a.status = "deferred"
                     reply = tr("deferred", lang)
                 elif len(answers) < len(qs):
-                    reply = question_text(qs[len(answers)], lang) + "\n" + tr("reply", lang)
+                    reply = question_text(qs[len(answers)], lang)
+                    buttons = yes_no(lang)
                 else:
                     a.status = "screened"
                     reply = tr("screened", lang, hospital=r.hospital_name, url=f"{settings.public_base_url.rstrip('/')}/r/{r.share_slug}")
         else:
             reply = tr("help", lang)
-    say(chat, reply)
+    say(chat, reply, buttons)
+
+
+def yes_no(lang):
+    return [(tr("btn_yes", lang), "YES"), (tr("btn_no", lang), "NO")]
+
+
+def handle_callback(cq):
+    """A tapped button: acknowledge it, then run it exactly like the typed command."""
+    try:
+        call("answerCallbackQuery", callback_query_id=cq["id"])
+    except TelegramError:
+        pass  # the spinner just times out; the tap itself still counts
+    msg = cq.get("message") or {}
+    data = cq.get("data", "")
+    if msg:
+        try:  # drop the tapped message's buttons so an old one can't be tapped twice
+            call("editMessageReplyMarkup", chat_id=msg["chat"]["id"], message_id=msg["message_id"])
+        except TelegramError:
+            pass
+    text = "/" + data.replace(":", " ", 1) if ":" in data else data
+    handle_message({"chat": msg.get("chat", {}), "text": text})
 
 
 
@@ -238,12 +270,10 @@ def deliver():
             if not d or not d.active or not d.chat_id or not r or r.status not in ("open", "dispatching", "needs_public_share") or (r.expires_at and r.expires_at <= utcnow()):
                 a.status = "skipped"
                 continue
-            if d.last_alert_at and utcnow() - d.last_alert_at < ALERT_GAP:
-                a.retry_at = d.last_alert_at + ALERT_GAP  # queued, not dropped: goes out when the donor's gap is over
-                continue
             a.attempts += 1
             try:
-                say(d.chat_id, tr("alert", d.language, group=r.patient_group, component=r.component, units=r.units, hospital=r.hospital_name, slug=r.share_slug, url=f"{settings.public_base_url.rstrip('/')}/r/{r.share_slug}"))
+                say(d.chat_id, tr("alert", d.language, group=r.patient_group, component=r.component, units=r.units, hospital=r.hospital_name, slug=r.share_slug, url=f"{settings.public_base_url.rstrip('/')}/r/{r.share_slug}"),
+                    [(tr("btn_donate", d.language), f"donate:{r.share_slug}"), (tr("btn_decline", d.language), f"decline:{r.share_slug}")])
                 a.status = "sent"
                 d.last_alert_at = utcnow()
                 a.retry_at = d.last_alert_at + ALERT_GAP  # when remind() may repeat it
@@ -273,10 +303,13 @@ def run():
         try:
             with session_scope() as db:
                 offset = db.get(TelegramCursor, 1).offset
-            updates = call("getUpdates", offset=offset, timeout=5, limit=20, allowed_updates=["message"])
+            updates = call("getUpdates", offset=offset, timeout=5, limit=20, allowed_updates=["message", "callback_query"])
             for item in updates:
                 # Commands are processed in order. Commit cursor after successful handling.
-                handle_message(item.get("message", {}))
+                if "callback_query" in item:
+                    handle_callback(item["callback_query"])
+                else:
+                    handle_message(item.get("message", {}))
                 with session_scope() as db:
                     db.get(TelegramCursor, 1).offset = item["update_id"] + 1
             deliver_welcomes()
