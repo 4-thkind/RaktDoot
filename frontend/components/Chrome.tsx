@@ -96,7 +96,7 @@ export function Header() {
             ) : (
               <>
                 <Link href="/login" aria-current={path.startsWith("/login") ? "page" : undefined}>{t("nav_login")}</Link>
-                <Link href="/signup" aria-current={path.startsWith("/signup") ? "page" : undefined}>{t("nav_signup")}</Link>
+                <Link href="/signup" className="nav-cta" aria-current={path.startsWith("/signup") ? "page" : undefined}>{t("nav_signup")}</Link>
               </>
             )}
           </span>
