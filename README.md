@@ -56,7 +56,7 @@ India needs an estimated **14.6 million units** of blood a year (NBTC-commission
 **Donor (WhatsApp only):**
 1. Send `JOIN` and answer eight short questions, once.
 2. When someone nearby needs your group, you get one message with **I can donate** / **Not today** buttons.
-3. After accepting, answer four yes/no health questions. If you pass, you get the hospital's location and the family's number.
+3. After accepting, answer five yes/no health questions. If you pass, you get the hospital's location and the family's number.
 4. After donating, you are silenced for your rest period (90 days for men, 120 for women) and told when you can donate again. `STOP` and `PAUSE 30` work at any time.
 
 ```mermaid
@@ -77,7 +77,7 @@ sequenceDiagram
   F->>B: ask donors
   B->>W: wave 1: 10 best-ranked donors within 5 km
   W->>D: alert with buttons
-  D->>W: "I can donate" + 4 pre-screen answers
+  D->>W: "I can donate" + 5 pre-screen answers
   W->>B: webhook
   B->>W: hospital pin + family contact
   B-->>F: donor connected (live dashboard)
@@ -193,7 +193,7 @@ Open two browser windows side by side.
 1. **Window A:** http://localhost:3000, then **Find blood now**. Pick `B+` and search for `AIIMS`.
 2. Sample stock appears. Tap **Ask nearby donors**, fill in the form (any valid 10-digit mobile number), then **Send to donors**.
 3. You land on the **live dashboard**: 10 donors are messaged in wave 1.
-4. **Window B:** http://localhost:3000/simulator. The donors who just got the alert are at the top. Open one, tap **I can donate**, then answer **No** to all four health questions.
+4. **Window B:** http://localhost:3000/simulator. The donors who just got the alert are at the top. Open one, tap **I can donate**, then answer **No** to all five health questions.
 5. Back in Window A, the donor shows as **connected**, with their number revealed.
 6. In `/admin` (token `change-me`), **Pretend 3 hours passed** sends the "are you on your way?" message. **Pretend 25 hours passed** sends "did you donate?".
 
@@ -445,10 +445,11 @@ The rest period, pause, opt-out and 24-hour limit are **SQL conditions**, so a d
 
 ### Pre-screen
 
-Defined in [`rules/eligibility.yaml`](backend/rules/eligibility.yaml). The four questions ask about:
+Defined in [`rules/eligibility.yaml`](backend/rules/eligibility.yaml). The five questions (from the eRaktKosh / MoHFW donor checklist) ask about:
 - alcohol in the last 24 hours;
-- a tattoo or piercing in the last 12 months;
-- fever, a cold or antibiotics right now;
+- medicines right now (antibiotics, blood thinners, aspirin);
+- fever, cold, cough, weakness or infection today;
+- a tattoo, piercing, surgery or major dental work in the last 12 months;
 - a donation in the last 3 months (men) or 4 months (women).
 
 Our own donation records override a "no" to the last question. The values follow commonly cited NBTC guidance and must be checked against the current official guideline before going live.
