@@ -89,7 +89,8 @@ export default function TelegramConnect() {
   }
 
   if (!token) return null;
-  return <aside className="wrap" style={{ paddingTop: 16, paddingBottom: 16 }}>
+  if (status?.connected && status.active && !url) return null; // all set: no need to keep asking on every page
+  return <aside className="wrap"><div className="sheet" style={{ margin: "16px 0 8px" }}>
     <strong>{copy.title}</strong>
     <p>{copy.description}</p>
     <p role="status">{status ? status.connected ? status.active ? copy.active : copy.stopped : copy.registered : error ? "" : copy.register}</p>
@@ -98,5 +99,5 @@ export default function TelegramConnect() {
     {url && <p><a href={url} target="_blank" rel="noopener noreferrer">{copy.open}</a><br />{copy.expires}</p>}
     {error && <p role="alert">{error}</p>}
     <p className="note">{copy.scope}</p>
-  </aside>;
+  </div></aside>;
 }
