@@ -47,7 +47,7 @@ const DICT = {
   step2_t: { en: "Then nearby donors", hi: "फिर पास के डोनर" },
   step2_b: { en: "If stock is missing or far, we message a few compatible donors within 5 km, widening only if needed.", hi: "स्टॉक न हो या दूर हो, तो 5 किमी के कुछ डोनरों को संदेश जाता है, ज़रूरत हो तो दायरा बढ़ता है।" },
   step3_t: { en: "You are connected", hi: "आप जुड़ जाते हैं" },
-  step3_b: { en: "Donors who accept answer four health questions, then get the hospital location and your number.", hi: "हाँ कहने वाले डोनर चार सवालों के बाद अस्पताल की लोकेशन और आपका नंबर पाते हैं।" },
+  step3_b: { en: "Donors who accept answer five health questions, then get the hospital location and your number.", hi: "हाँ कहने वाले डोनर पांच सवालों के बाद अस्पताल की लोकेशन और आपका नंबर पाते हैं।" },
   facts_title: { en: "Why this exists", hi: "यह क्यों ज़रूरी है" },
 
   // flow
@@ -222,10 +222,13 @@ const DICT = {
   voice_listening: { en: "Listening…", hi: "सुन रहे हैं…" },
   voice_sample: { en: "Try a sample voice note", hi: "नमूना वॉइस नोट आज़माएं" },
   voice_heard: { en: "We heard", hi: "हमने सुना" },
+  voice_denied: { en: "Microphone access was blocked. Allow the microphone for this site (lock icon in the address bar) and try again.", hi: "माइक्रोफ़ोन की अनुमति नहीं मिली। इस साइट के लिए माइक्रोफ़ोन चालू करें (पता बार में ताले का आइकन) और फिर कोशिश करें।" },
+  voice_unsupported: { en: "This browser cannot record audio. Please use Chrome, Edge or Safari, or choose below.", hi: "यह ब्राउज़र आवाज़ रिकॉर्ड नहीं कर सकता। Chrome, Edge या Safari इस्तेमाल करें, या नीचे चुनें।" },
   voice_none: { en: "Could not understand that. Please try again or choose below.", hi: "समझ नहीं आया। फिर कोशिश करें या नीचे चुनें।" },
   voice_privacy: { en: "Audio is turned into text and then deleted.", hi: "आवाज़ को टेक्स्ट में बदलकर हटा दिया जाता है।" },
   listen: { en: "Listen", hi: "सुनें" },
 
+  print_slip: { en: "Print requisition slip for the hospital", hi: "अस्पताल के लिए रिक्विज़िशन पर्ची प्रिंट करें" },
   // camp registration (A2)
   reg_title: { en: "Register for this camp", hi: "इस शिविर के लिए पंजीकरण" },
   reg_body: {
