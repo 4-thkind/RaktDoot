@@ -12,17 +12,22 @@ static:
     F: 120
     O: 120              # conservative default when gender is "other"
 
-# Asked in order after a donor taps "I can donate". Answering "yes" to any = defer today.
+# Asked in order after a donor taps "I can donate" (and before a rota slot is confirmed).
+# Answering "yes" to any = defer today. Based on the donor checklist in the eRaktKosh FAQ (MoHFW)
+# and NBTC donor-selection criteria; the blood centre still does the full screening.
 questions:
   - id: alcohol_24h
     en: "Have you had alcohol in the last 24 hours?"
     hi: "क्या आपने पिछले 24 घंटे में शराब पी है?"
-  - id: tattoo_12m
-    en: "Any tattoo or piercing in the last 12 months?"
-    hi: "क्या पिछले 12 महीने में टैटू या पियर्सिंग करवाई है?"
+  - id: medication_now
+    en: "Are you taking any medicine right now, such as antibiotics, blood thinners or aspirin?"
+    hi: "क्या आप अभी कोई दवा ले रहे हैं, जैसे एंटीबायोटिक, खून पतला करने की दवा या एस्पिरिन?"
   - id: unwell_now
-    en: "Do you have fever or a cold, or are you taking antibiotics right now?"
-    hi: "क्या अभी बुखार या ज़ुकाम है, या आप एंटीबायोटिक ले रहे हैं?"
+    en: "Do you have fever, cold, cough, weakness or any infection today?"
+    hi: "क्या आज आपको बुखार, ज़ुकाम, खांसी, कमज़ोरी या कोई संक्रमण है?"
+  - id: tattoo_12m
+    en: "In the last 12 months, have you had a tattoo, piercing, surgery or major dental work?"
+    hi: "क्या पिछले 12 महीने में टैटू, पियर्सिंग, ऑपरेशन या दांत का बड़ा इलाज हुआ है?"
   - id: donated_recently
     en: "Have you donated blood in the last 3 months (4 months for women)?"
     hi: "क्या आपने पिछले 3 महीने में (महिलाएं 4 महीने) रक्तदान किया है?"
