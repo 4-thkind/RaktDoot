@@ -21,6 +21,8 @@ from .telegram_i18n import LANGUAGES, tr, question_text
 
 log = logging.getLogger("telegram")
 router = APIRouter(prefix="/api/telegram", tags=["telegram"])
+ALERT_GAP = timedelta(minutes=5)  # at most one request alert per donor per 5 minutes
+MAX_REMINDERS = 3  # an unanswered alert is repeated every ALERT_GAP, this many times, then left alone
 
 
 class TelegramDonor(Base):
@@ -33,6 +35,7 @@ class TelegramDonor(Base):
     token_expires: Mapped[object | None] = mapped_column(DateTime, nullable=True)
     active: Mapped[bool] = mapped_column(Boolean, default=False)
     welcome_pending: Mapped[bool] = mapped_column(Boolean, default=False)
+    last_alert_at: Mapped[object | None] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[object] = mapped_column(DateTime, default=utcnow)
 
 
@@ -45,6 +48,7 @@ class TelegramAlert(Base):
     attempts: Mapped[int] = mapped_column(Integer, default=0)
     retry_at: Mapped[object] = mapped_column(DateTime, default=utcnow)
     answers: Mapped[dict] = mapped_column(JSON, default=dict)
+    reminders: Mapped[int] = mapped_column(Integer, default=0)
     __table_args__ = (UniqueConstraint("user_id", "request_id"),)
 
 
@@ -215,6 +219,15 @@ def enqueue():
                     db.add(TelegramAlert(user_id=d.user_id, request_id=r.id))
 
 
+def remind():
+    """Re-queue unanswered alerts so the same message repeats every ALERT_GAP. Answering (/donate),
+    /stop or the request closing ends it: those change the status or make deliver() skip it."""
+    with session_scope() as db:
+        for a in db.scalars(select(TelegramAlert).where(TelegramAlert.status == "sent", TelegramAlert.reminders < MAX_REMINDERS,
+                                                         TelegramAlert.retry_at <= utcnow())).all():
+            a.status, a.reminders = "pending", a.reminders + 1
+
+
 def deliver():
     with session_scope() as db:
         ids = db.scalars(select(TelegramAlert.id).where(TelegramAlert.status == "pending", TelegramAlert.retry_at <= utcnow()).limit(10)).all()
@@ -225,10 +238,15 @@ def deliver():
             if not d or not d.active or not d.chat_id or not r or r.status not in ("open", "dispatching", "needs_public_share") or (r.expires_at and r.expires_at <= utcnow()):
                 a.status = "skipped"
                 continue
+            if d.last_alert_at and utcnow() - d.last_alert_at < ALERT_GAP:
+                a.retry_at = d.last_alert_at + ALERT_GAP  # queued, not dropped: goes out when the donor's gap is over
+                continue
             a.attempts += 1
             try:
                 say(d.chat_id, tr("alert", d.language, group=r.patient_group, component=r.component, units=r.units, hospital=r.hospital_name, slug=r.share_slug, url=f"{settings.public_base_url.rstrip('/')}/r/{r.share_slug}"))
                 a.status = "sent"
+                d.last_alert_at = utcnow()
+                a.retry_at = d.last_alert_at + ALERT_GAP  # when remind() may repeat it
             except TelegramError as exc:
                 if exc.code == 403:
                     d.active, a.status = False, "blocked"
@@ -263,6 +281,7 @@ def run():
                     db.get(TelegramCursor, 1).offset = item["update_id"] + 1
             deliver_welcomes()
             enqueue()
+            remind()
             deliver()
         except TelegramError as exc:
             log.warning("Telegram error code %s (409 means another poller or webhook is active)", exc.code)
