@@ -182,3 +182,37 @@ def test_voice_parse_endpoint(fresh):
     assert r["fields"]["patient_group"] == "B+" and r["fields"]["units"] == 2 and "Safdarjung" in r["fields"]["hospital"]
     e = fresh.post("/api/extract", json={"text": "Papa ko A negative chahiye RML hospital 2 unit"}).json()
     assert e["fields"]["patient_group"] == "A-" and e["fields"]["units"] == 2
+
+
+# ---------------------------------------------------------------- rota confirmation runs the health pre-screen
+def _reminded_slot(c):
+    from app.models import RecurringSlot
+    c.post("/api/admin/tick", headers=ADMIN)
+    with SessionLocal() as db:
+        s = db.query(RecurringSlot).filter_by(status="reminded").first()
+        return s.id, s.donor.phone
+
+
+def test_rota_confirm_asks_health_questions(fresh):
+    from app.models import RecurringSlot
+    sid, phone = _reminded_slot(fresh)
+    chat = say(fresh, phone, button=f"rc:{sid}:y")
+    tapped = [m for m in chat["messages"] if m["direction"] == "in"][-1]["body"]
+    assert "rc:" not in tapped and tapped in ("Yes, I'll come", "हाँ, आऊँगा")  # the button title, not its id
+    assert any(o.startswith(f"rs:{sid}:alcohol_24h:") for o in options(chat))
+    chat = say(fresh, phone, button=f"rs:{sid}:alcohol_24h:y")
+    assert "alcohol" in chat["messages"][-1]["body"] or "शराब" in " ".join(m["body"] for m in outs(chat)[-3:])
+    with SessionLocal() as db:
+        assert db.get(RecurringSlot, sid).status == "declined"
+
+
+def test_rota_confirm_after_all_no(fresh):
+    from app.core import eligibility
+    from app.models import RecurringSlot
+    sid, phone = _reminded_slot(fresh)
+    say(fresh, phone, button=f"rc:{sid}:y")
+    for q in eligibility.questions():
+        chat = say(fresh, phone, button=f"rs:{sid}:{q['id']}:n")
+    with SessionLocal() as db:
+        assert db.get(RecurringSlot, sid).status == "confirmed"
+    assert len(eligibility.questions()) == 5 and "medication_now" in {q["id"] for q in eligibility.questions()}
