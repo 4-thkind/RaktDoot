@@ -91,7 +91,8 @@ def test_full_flow(fresh):
     say(c, phones[1], "kal raat ek peg liya tha")  # free-text answer to the alcohol question -> deferred
     accept_and_pass(c, phones[2])
     chat = accept_and_pass(c, phones[3])
-    assert any("Family contact" in m["body"] for m in chat["messages"])
+    assert any("The family has your number" in m["body"] for m in chat["messages"])
+    assert not any("+91" in m["body"] for m in chat["messages"])  # the family's number never reaches donors
 
     snap = c.get(f"/api/requests/{rid}", params={"t": tok}).json()
     assert snap["status"] == "matched", snap["counts"]
