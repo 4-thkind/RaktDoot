@@ -42,6 +42,7 @@ export function Header() {
   const tools: [string, string][] = [
     ["/radar", t("nav_radar")],
     ["/camps", t("nav_camps")],
+    ["/running", "Running requests"],
     ["/simulator", "WhatsApp simulator"],
     ["/admin", "Team"],
   ];
