@@ -78,7 +78,7 @@ def _handle(db: Session, phone: str, text: str = "", button_id: str | None = Non
         return
     else:
         shown = camp_registration.mask_aadhaar(text) if conv.state == "cr_aadhaar" else text
-        whatsapp.log_inbound(db, phone, shown or (f"[button] {button_id}" if button_id else "[location]" if location else ""),
+        whatsapp.log_inbound(db, phone, shown or (_button_title(db, phone, button_id) if button_id else "[location]" if location else ""),
                              {"button_id": button_id, "location": location}, wa_id)
 
     if donor:
@@ -161,7 +161,9 @@ def _button(db: Session, phone: str, donor: Donor | None, conv, button_id: str) 
     if kind == "fw" and len(parts) == 3:
         return _forward_button(db, phone, parts[1], parts[2], donor.language if donor else conv.data.get("lang", "en"))
     if kind == "rc" and len(parts) == 3:
-        return _rota_button(db, phone, donor, parts[1], parts[2] == "y")
+        return _rota_button(db, phone, donor, conv, parts[1], parts[2] == "y")
+    if kind == "rs" and len(parts) == 4:
+        return _rota_answer(db, phone, donor, conv, parts[1], parts[2], parts[3] == "y")
     if kind == "cr" and len(parts) == 2:
         return _camp_start(db, phone, donor, conv, parts[1])
     n = _own_notification(db, phone, parts[1]) if len(parts) > 1 and kind in ("acc", "dec", "el", "ow", "fu") else None
@@ -214,9 +216,8 @@ def _ask_next(db: Session, n: Notification) -> None:
 def answer(db: Session, n: Notification, conv, qid: str, yes: bool) -> None:
     donor, req = n.donor, n.request
     lang = donor.language
-    if n.status != "accepted":
-        if n.status == "cancelled":
-            whatsapp.send(db, donor.phone, t("already_covered", lang))
+    if n.status != "accepted":  # a tap on an old question: say so instead of staying silent
+        whatsapp.send(db, donor.phone, t("already_covered" if n.status == "cancelled" else "prescreen_done", lang))
         return
     if eligibility.question(qid) is None:
         return
@@ -227,10 +228,11 @@ def answer(db: Session, n: Notification, conv, qid: str, yes: bool) -> None:
         answers[qid] = True
     n.eligibility_answers = answers
 
-    if eligibility.answers_disqualify(answers):
+    failed = eligibility.answers_disqualify(answers)
+    if failed:
         n.status = "ineligible"
         conv.state, conv.data = "idle", {}
-        whatsapp.send(db, donor.phone, t("ineligible", lang))
+        whatsapp.send(db, donor.phone, t("ineligible", lang, reason=t(f"why_{failed}", lang)))
         _suggest_camp(db, donor, dispatch.local_today() + timedelta(days=1))
         return
     if eligibility.next_question(answers):
@@ -241,6 +243,7 @@ def answer(db: Session, n: Notification, conv, qid: str, yes: bool) -> None:
         n.status = "cancelled"
         whatsapp.send(db, donor.phone, t("already_covered", lang))
         return
+    whatsapp.send(db, donor.phone, t("eligible_today", lang))
     connect(db, n)
 
 
@@ -583,19 +586,63 @@ def _forward_button(db: Session, phone: str, choice: str, fid: str, lang: str) -
 
 
 # ------------------------------------------------------------------ recurring rota (F7)
-def _rota_button(db: Session, phone: str, donor: Donor | None, slot_id: str, yes: bool) -> None:
+def _button_title(db: Session, phone: str, button_id: str) -> str:
+    """Show what the person tapped ("Yes, I'll come"), not the internal button id."""
+    for m in db.scalars(select(ChatMessage).where(ChatMessage.phone == phone, ChatMessage.direction == "out")
+                        .order_by(ChatMessage.id.desc()).limit(30)):
+        for o in (m.payload or {}).get("options") or []:
+            if o.get("id") == button_id:
+                return o.get("title") or button_id
+    return "[button]"
+
+
+def _rota_ask(db: Session, phone: str, slot: RecurringSlot, answers: dict, lang: str) -> None:
+    q = eligibility.next_question(answers)
+    whatsapp.send(db, phone, q.get(lang, q["en"]),
+                  buttons=[(f"rs:{slot.id}:{q['id']}:y", b("yes", lang)), (f"rs:{slot.id}:{q['id']}:n", b("no", lang))])
+
+
+def _rota_button(db: Session, phone: str, donor: Donor | None, conv, slot_id: str, yes: bool) -> None:
     slot = db.get(RecurringSlot, slot_id)
     lang = donor.language if donor else "en"
     if not donor or not slot or slot.donor_id != donor.id or slot.status not in ("planned", "reminded"):
         whatsapp.send(db, phone, t("help", lang))
         return
-    if yes:
-        slot.status = "confirmed"
-        whatsapp.send(db, phone, t("recurring_confirmed", lang, date=slot.due_date.strftime("%d %b")))
+    if yes:  # same health pre-screen as an emergency alert before the slot is confirmed
+        conv.state, conv.data = "rota_screen", {"slot": slot.id, "answers": {}}
+        whatsapp.send(db, phone, t("pre_screen_intro", lang))
+        _rota_ask(db, phone, slot, {}, lang)
     else:
         slot.status = "declined"
         whatsapp.send(db, phone, t("recurring_declined", lang))
         recurring.refill(db, slot)
+
+
+def _rota_answer(db: Session, phone: str, donor: Donor | None, conv, slot_id: str, qid: str, yes: bool) -> None:
+    slot = db.get(RecurringSlot, slot_id)
+    lang = donor.language if donor else "en"
+    data = dict(conv.data or {})
+    if not donor or not slot or slot.donor_id != donor.id or conv.state != "rota_screen" or data.get("slot") != slot_id \
+            or eligibility.question(qid) is None:
+        whatsapp.send(db, phone, t("prescreen_done", lang))
+        return
+    answers = {**data.get("answers", {}), qid: yes}
+    if qid == "donated_recently" and eligibility.in_rest_period(donor.last_donation_date, donor.gender, slot.due_date):
+        answers[qid] = True  # our own records: still resting on the due date
+    failed = eligibility.answers_disqualify(answers)
+    if failed:
+        conv.state, conv.data = "idle", {}
+        slot.status = "declined"
+        whatsapp.send(db, phone, t("ineligible", lang, reason=t(f"why_{failed}", lang)))
+        recurring.refill(db, slot)
+        return
+    if eligibility.next_question(answers):
+        conv.data = {**data, "answers": answers}
+        return _rota_ask(db, phone, slot, answers, lang)
+    conv.state, conv.data = "idle", {}
+    slot.status = "confirmed"
+    whatsapp.send(db, phone, t("eligible_today", lang))
+    whatsapp.send(db, phone, t("recurring_confirmed", lang, date=slot.due_date.strftime("%d %b")))
 
 
 # ------------------------------------------------------------------ family updates
