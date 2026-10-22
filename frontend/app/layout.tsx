@@ -32,8 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LangProvider>
           <a href="#main" className="sr-only">Skip to content</a>
           <Header />
-          <TelegramConnect />
-          <main id="main">{children}</main>
+          <main id="main"><TelegramConnect />{children}</main>
           <Footer />
         </LangProvider>
       </body>
