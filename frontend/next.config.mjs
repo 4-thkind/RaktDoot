@@ -11,6 +11,7 @@ const nextConfig = {
     return [
       { source: "/api/:path*", destination: `${backend}/api/:path*` },
       { source: "/mock-portal/:path*", destination: `${backend}/mock-portal/:path*` },
+      { source: "/webhooks/:path*", destination: `${backend}/webhooks/:path*` }, // Twilio / Meta webhooks via the tunnel
     ];
   },
 };
