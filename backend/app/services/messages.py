@@ -47,8 +47,8 @@ TEXT: dict[str, dict[str, str]] = {
         "hi": "धन्यवाद। {hospital} वाला अनुरोध पूरा हो गया है, इस बार आपकी ज़रूरत नहीं है। अगली बार आपके ग्रुप की ज़रूरत होने पर हम आपसे संपर्क करेंगे।",
     },
     "connected": {
-        "en": "Thank you, {name}. Please go to the blood centre at {hospital} and say you are donating for patient {ref}.\n\nFamily contact: {requester} (+{phone}).\nMap: {map}\n\nThe blood centre will do a short health check before you donate.",
-        "hi": "धन्यवाद, {name}. कृपया {hospital} के ब्लड सेंटर जाएं और बताएं कि आप मरीज़ {ref} के लिए रक्तदान कर रहे हैं।\n\nपरिवार का संपर्क: {requester} (+{phone}).\nनक्शा: {map}\n\nरक्तदान से पहले ब्लड सेंटर एक छोटी स्वास्थ्य जांच करेगा।",
+        "en": "Thank you, {name}. Please go to the blood centre at {hospital} and say you are donating for patient {ref}.\n\nThe family has your number and will call you. For privacy we do not share theirs.\nMap: {map}\n\nThe blood centre will do a short health check before you donate.",
+        "hi": "धन्यवाद, {name}. कृपया {hospital} के ब्लड सेंटर जाएं और बताएं कि आप मरीज़ {ref} के लिए रक्तदान कर रहे हैं।\n\nपरिवार के पास आपका नंबर है, वे आपको कॉल करेंगे। निजता के लिए उनका नंबर साझा नहीं किया जाता।\nनक्शा: {map}\n\nरक्तदान से पहले ब्लड सेंटर एक छोटी स्वास्थ्य जांच करेगा।",
     },
     "followup": {
         "en": "Did you donate at {hospital}?",
@@ -349,7 +349,7 @@ TEMPLATES = {
     "rq_donor_coming": ("requester_donor_coming", ["name", "group", "hospital", "distance", "phone"]),
     "rq_all_asked": ("requester_all_asked", ["hospital", "link"]),
     "covered": ("request_covered", ["hospital"]),
-    "connected": ("donor_connected", ["name", "hospital", "ref", "requester", "phone", "map"]),
+    "connected": ("donor_connected", ["name", "hospital", "ref", "map"]),  # no family name/phone: donors never see them
     "followup": ("donation_followup", ["hospital"]),
     "onway": ("donor_on_way_check", ["hospital"]),
     "eligible_again": ("eligible_again", ["name"]),
