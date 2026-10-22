@@ -175,7 +175,7 @@ def open_gap_requests(db: Session, today: date) -> int:
         slots = db.scalars(select(RecurringSlot).where(RecurringSlot.need_id == need.id, RecurringSlot.due_date == soon)).all()
         filled = sum(1 for s in slots if s.status in ("planned", "reminded", "confirmed"))
         gap = max(0, need.units - filled)
-        if not gap or any(s.request_id for s in slots):
+        if not slots or not gap or any(s.request_id for s in slots):  # no slots = not a rota date (else a new request every tick)
             continue
         req = Request(patient_group=need.patient_group, group_confirmed=True, units=gap, patient_age=0, patient_gender="O",
                       hospital_name=need.hospital_name, hospital_lat=need.hospital_lat, hospital_lng=need.hospital_lng,
