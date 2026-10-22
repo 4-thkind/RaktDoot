@@ -25,20 +25,23 @@ def test_gap_requests_not_reopened_every_tick(fresh):
             assert recurring.open_gap_requests(db, day) == 0
 
 
-def test_one_telegram_alert_per_donor_per_5_minutes(fresh, monkeypatch):
+def test_new_requests_go_out_at_once_repeats_wait_5_minutes(fresh, monkeypatch):
     sent = []
-    monkeypatch.setattr(telegram, "say", lambda chat, text: sent.append(chat))
+    monkeypatch.setattr(telegram, "say", lambda chat, text, buttons=None: sent.append(text))
     with session_scope() as db:
         db.add(telegram.TelegramDonor(user_id="u1", chat_id="c1", active=True, created_at=utcnow() - timedelta(hours=1)))
-        ids = [_request(db).id for _ in range(3)]
-        for rid in ids:
-            db.add(telegram.TelegramAlert(user_id="u1", request_id=rid))
+        first = _request(db).id
+        db.add(telegram.TelegramAlert(user_id="u1", request_id=first))
     telegram.deliver()
-    assert sent == ["c1"]
-    with session_scope() as db:
-        waiting = db.scalars(select(telegram.TelegramAlert).where(telegram.TelegramAlert.status == "pending")).all()
-        assert len(waiting) == 2 and all(a.retry_at > utcnow() + timedelta(minutes=4) for a in waiting)
-        assert db.scalar(select(func.count()).select_from(telegram.TelegramAlert).where(telegram.TelegramAlert.status == "sent")) == 1
+    with session_scope() as db:  # a brand-new request right after: must not wait behind the first alert
+        for _ in range(2):
+            db.add(telegram.TelegramAlert(user_id="u1", request_id=_request(db).id))
+    telegram.remind(); telegram.deliver()
+    assert len(sent) == 3
+    telegram.remind(); telegram.deliver()
+    assert len(sent) == 3  # no repeat of any of them before 5 minutes
+    _age(); telegram.remind(); telegram.deliver()
+    assert len(sent) == 6  # then each request repeats once
 
 
 def test_admin_lists_and_stops_running_requests(fresh):
@@ -67,7 +70,7 @@ def _age(minutes=6):
 
 def test_unanswered_alert_repeats_every_5_minutes_then_stops(fresh, monkeypatch):
     sent = []
-    monkeypatch.setattr(telegram, "say", lambda chat, text: sent.append(text))
+    monkeypatch.setattr(telegram, "say", lambda chat, text, buttons=None: sent.append(text))
     with session_scope() as db:
         db.add(telegram.TelegramDonor(user_id="u2", chat_id="c2", active=True))
         db.add(telegram.TelegramAlert(user_id="u2", request_id=_request(db).id))
@@ -81,7 +84,7 @@ def test_unanswered_alert_repeats_every_5_minutes_then_stops(fresh, monkeypatch)
 
 def test_donate_reply_stops_reminders(fresh, monkeypatch):
     sent = []
-    monkeypatch.setattr(telegram, "say", lambda chat, text: sent.append(text))
+    monkeypatch.setattr(telegram, "say", lambda chat, text, buttons=None: sent.append(text))
     with session_scope() as db:
         db.add(telegram.TelegramDonor(user_id="u3", chat_id="c3", active=True))
         r = _request(db)
@@ -92,3 +95,26 @@ def test_donate_reply_stops_reminders(fresh, monkeypatch):
     before = len(sent)
     _age(); telegram.remind(); telegram.deliver()
     assert len(sent) == before  # screening started: no more repeats of the alert
+
+
+def test_alert_and_question_buttons(fresh, monkeypatch):
+    out = []
+    monkeypatch.setattr(telegram, "say", lambda chat, text, buttons=None: out.append(buttons or []))
+    monkeypatch.setattr(telegram, "call", lambda method, **kw: None)  # answerCallbackQuery / editMessageReplyMarkup
+    with session_scope() as db:
+        db.add(telegram.TelegramDonor(user_id="u4", chat_id="c4", active=True))
+        r1, r2 = _request(db), _request(db)
+        s1, s2 = r1.share_slug, r2.share_slug
+        db.add(telegram.TelegramAlert(user_id="u4", request_id=r1.id))
+        db.add(telegram.TelegramAlert(user_id="u4", request_id=r2.id))
+    telegram.deliver()
+    assert [c for _, c in out[0]] == [f"donate:{s1}", f"decline:{s1}"]
+    tap = lambda data: telegram.handle_callback({"id": "q", "data": data, "message": {"chat": {"id": "c4", "type": "private"}, "message_id": 1}})
+    tap(f"donate:{s1}")
+    assert [c for _, c in out[-1]] == ["YES", "NO"]  # first health question has Yes/No buttons
+    tap("NO")
+    assert [c for _, c in out[-1]] == ["YES", "NO"]  # and the next one
+    tap(f"decline:{s2}")
+    with session_scope() as db:
+        st = {a.request_id: a.status for a in db.scalars(select(telegram.TelegramAlert)).all()}
+        assert st[r2.id] == "declined" and st[r1.id] == "screening"
