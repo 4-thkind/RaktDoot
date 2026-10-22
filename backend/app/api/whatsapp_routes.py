@@ -167,6 +167,18 @@ def mock_chats(q: str = "", group: str = "", limit: int = Query(40, le=200), db:
     return out[:limit]
 
 
+@router.post("/api/mock/clear", dependencies=[Depends(mock_only)])
+def mock_clear(db: Session = Depends(get_db)):
+    """Wipe the simulator's chat history and conversation states (mock mode only)."""
+    from ..models import Conversation
+    n = db.execute(ChatMessage.__table__.delete()).rowcount
+    db.execute(Conversation.__table__.delete())
+    from ..seed import seed_chats
+    seed_chats(db)  # back to each donor's sign-up chat, not a blank phone
+    db.commit()
+    return {"deleted_messages": n}
+
+
 @router.get("/api/mock/chats/{phone}", dependencies=[Depends(mock_only)])
 def mock_chat(phone: str, db: Session = Depends(get_db)):
     msgs = db.scalars(select(ChatMessage).where(ChatMessage.phone == phone).order_by(ChatMessage.id)).all()
